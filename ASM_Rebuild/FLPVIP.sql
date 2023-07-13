@@ -162,6 +162,10 @@ INSERT INTO Users(username,password ,idSinhVien,idGiangVien,idCanBo)
 		('thunk@fpt.edu.vn','123',12,null,null),
 		('thuvk@fpt.edu.vn','123',13,null,null);
 GO
+GO
+insert into Ky_hoc ()
+	VALUES();
+GO
 Create or alter procedure p_insertCanBo
  @tenCanBo nvarchar(25),@sdt varchar(10),@email varchar(100),@hinhAnh VARBINARY(MAX),@diaChi nvarchar(80),@gioiTinh bit
 AS
@@ -211,6 +215,24 @@ BEGIN
 		SET tenSinhVien =@tenSinhVien ,idNganh= @idNganh,idNganhHep=@idNganhHep,sdt=@sdt,diaChi=@diaChi,email=@email,hinhAnh=@hinhAnh,gioiTinh=@gioiTinh
 		WHERE idSinhVien =@idSinhVien
 END
+GO
+Create or alter procedure p_updateLecture
+	@tenGiangVien nvarchar(25),@idNganh  int,@sdt varchar(10),@email varchar(100),@gioiTinh bit,@hinhAnh VARBINARY(MAX),@diaChi nvarchar(80),@idGiangVien int
+AS
+	BEGIN
+		UPDATE Giang_Vien SET tenGiangVien=@tenGiangVien,idNganh=@idNganh,sdt=@sdt,email=@email,gioiTinh=@gioiTinh,hinhAnh=@hinhAnh,diaChi=@diaChi
+			WHERE idGiangVien =@idGiangVien 
+	END	
+GO
+Create or alter trigger tg_updateLectureUser ON Giang_Vien
+	for update 
+		AS
+	BEGIN
+		DECLARE @id int,@username varchar(100)
+		SELECT @id=idGiangVien,@username=email FROM inserted
+		UPDATE Users SET username = @username
+		WHERE idGiangVien = @id
+	END
 Go
 CREATE or alter trigger tg_updateStudentUser on Sinh_Vien 
 for update

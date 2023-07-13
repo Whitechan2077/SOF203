@@ -51,4 +51,24 @@ public class LectureService {
             Logger.getLogger(StudentService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+        public void updateLecture(Lecture o){
+        try {
+            Connection conn = DataBaseConnection.getConnection();
+            CallableStatement cstm = conn.prepareCall("{CALL p_updateLecture(?,?,?,?,?,?,?,?)}");
+            cstm.setString(1, o.getLectureName());
+            cstm.setInt(2, o.getIdMajor());
+            cstm.setString(4, o.getEmail());
+            cstm.setString(3, o.getPhoneNum());
+            cstm.setByte(5,o.getGender());
+            cstm.setBytes(6, o.getImg());
+            cstm.setString(7, o.getAddress());
+            cstm.setInt(8,o.getLectureid());
+            System.out.println(o.toString());
+            cstm.execute();
+            cstm.close();
+            conn.close();
+                    } catch (SQLException ex) {
+            Logger.getLogger(LectureService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
 }
