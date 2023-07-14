@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utilities.DataBaseConnection;
+import model.Building;
 /**
  *
  * @author buidu
@@ -31,5 +32,17 @@ public class BuildingService {
             Logger.getLogger(BuildingService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return listClassRom;
+    }
+    public void insertNewBuilding(Building o){
+        try {
+            Connection conn = DataBaseConnection.getConnection();
+            CallableStatement cstm = conn.prepareCall("EXEC p_insertBuilding ?");
+            cstm.setString(1,o.getBuilingCode());
+            cstm.execute();
+            conn.close();
+            cstm.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuildingService.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

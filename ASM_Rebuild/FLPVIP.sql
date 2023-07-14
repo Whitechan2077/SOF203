@@ -417,6 +417,9 @@ EXEC p_insertUsers 'khanhph@fpt.edu.vn','123',NULL,8,NULL;
 EXEC p_insertUsers 'hangnt@fpt.edu.vn','123',NULL,9,NULL;
 SELECT * FROM Can_Bo_Dao_tao
 GO
+EXEC p_insertBuilding 
+selecT * FROM toaNha
+GO
 EXEC p_insertCanBo 'Bùi Hoàng Dũng','039487848','dungbh@gmail.com',0011000111,N''
 EXEC p_updateLecture 'Linh Remind',7,'0354451759','linhRemind@gmail.com',false,0011111011,'HCM',21
 GO
@@ -472,7 +475,7 @@ RETURNS TABLE
 AS
 RETURN
 (
-SELECT  toaNha.idToa,maToa,CONCAT(maToa,soPhong) AS tenPhong,phongHoc.idPhong,soPhong FROM toaNha JOIN phongHoc ON toaNha.idToa = phongHoc.idToa
+SELECT  toaNha.idToa,maToa,CONCAT(maToa,soPhong) AS tenPhong,phongHoc.idPhong,soPhong FROM toaNha FULL JOIN phongHoc ON toaNha.idToa = phongHoc.idToa
 
 );
 SELECT * FROM  dbo.RomDetails()
