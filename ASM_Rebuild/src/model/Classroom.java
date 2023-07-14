@@ -21,5 +21,22 @@ public class Classroom extends Building{
     public Classroom(int roomId, int rommcode) {
         this.roomId = roomId;
         this.rommcode = rommcode;
-    }   
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public int getRommcode() {
+        return rommcode;
+    }
+
+    public void setRommcode(int rommcode) {
+        this.rommcode = rommcode;
+    }
+    
 }

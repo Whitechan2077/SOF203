@@ -260,10 +260,26 @@ INSERT INTO Users(username,password ,idSinhVien,idGiangVien,idCanBo)
 		('nguyennt@fpt.edu.vn','123',11,null,null),
 		('thunk@fpt.edu.vn','123',12,null,null),
 		('thuvk@fpt.edu.vn','123',13,null,null);
-GO
+GO  
 GO
 insert into Ky_hoc()
 	VALUES();
+GO
+create  or alter PROCEDURE p_insertBuilding
+	@maToa varchar(1)
+AS
+BEGIN
+	INSERT INTO toaNha(maToa)
+	VALUES(@maToa)
+END
+GO
+create or alter procedure p_insertRoom
+	@idToa INT,@soPhong int
+AS
+BEGIN
+	insert into phongHoc(idToa,soPhong)
+		VALUES(@idToa,@soPhong)
+END
 GO
 Create or alter procedure p_insertCanBo
  @tenCanBo nvarchar(25),@sdt varchar(10),@email varchar(100),@hinhAnh VARBINARY(MAX),@diaChi nvarchar(80),@gioiTinh bit
@@ -404,6 +420,18 @@ GO
 EXEC p_insertCanBo 'Bùi Hoàng Dũng','039487848','dungbh@gmail.com',0011000111,N''
 EXEC p_updateLecture 'Linh Remind',7,'0354451759','linhRemind@gmail.com',false,0011111011,'HCM',21
 GO
+EXEC p_insertBuilding 'P';
+EXEC  p_insertRoom 1,101;
+EXEC  p_insertRoom 1,102;
+EXEC  p_insertRoom 1,103;
+EXEC  p_insertRoom 1,104;
+EXEC  p_insertRoom 1,105;
+EXEC  p_insertRoom 1,107;
+EXEC  p_insertRoom 1,108;
+EXEC  p_insertRoom 1,109;
+EXEC  p_insertRoom 1,110;
+GO
+SELECT  toaNha.idToa,maToa,CONCAT(maToa,soPhong) AS tenPhong FROM toaNha JOIN phongHoc ON toaNha.idToa = phongHoc.idToa
 SELECT * FROM Giang_Vien
 SELECT * FROM Mon_Hoc
 SELECT * FROM Nganh_Hep
@@ -438,3 +466,4 @@ RETURN
 SELECT Giang_Vien.idGiangVien,Giang_Vien.tenGiangVien,Giang_Vien.gioiTinh,Giang_Vien.email,Giang_Vien.diaChi,Chuyen_Nganh.tenNganh,Giang_Vien.hinhAnh,Giang_Vien.sdt 
 	FROM Giang_Vien JOIN Chuyen_Nganh ON Giang_Vien.idNganh = Chuyen_Nganh.idNganh
 );
+ 
