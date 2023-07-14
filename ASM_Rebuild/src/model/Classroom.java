@@ -38,5 +38,10 @@ public class Classroom extends Building{
     public void setRommcode(int rommcode) {
         this.rommcode = rommcode;
     }
+
+    @Override
+    public String toString() {
+        return "Classroom{" + "roomId=" + roomId + ", rommcode=" + rommcode + '}'+"Ten toa"+super.getBuilingCode()+"ID toa"+super.getIdBuiding();
+    }
     
 }

@@ -431,7 +431,7 @@ EXEC  p_insertRoom 1,108;
 EXEC  p_insertRoom 1,109;
 EXEC  p_insertRoom 1,110;
 GO
-SELECT  toaNha.idToa,maToa,CONCAT(maToa,soPhong) AS tenPhong FROM toaNha JOIN phongHoc ON toaNha.idToa = phongHoc.idToa
+SELECT  toaNha.idToa,maToa,CONCAT(maToa,soPhong) AS tenPhong,phongHoc.idPhong FROM toaNha JOIN phongHoc ON toaNha.idToa = phongHoc.idToa
 SELECT * FROM Giang_Vien
 SELECT * FROM Mon_Hoc
 SELECT * FROM Nganh_Hep
@@ -466,4 +466,13 @@ RETURN
 SELECT Giang_Vien.idGiangVien,Giang_Vien.tenGiangVien,Giang_Vien.gioiTinh,Giang_Vien.email,Giang_Vien.diaChi,Chuyen_Nganh.tenNganh,Giang_Vien.hinhAnh,Giang_Vien.sdt 
 	FROM Giang_Vien JOIN Chuyen_Nganh ON Giang_Vien.idNganh = Chuyen_Nganh.idNganh
 );
- 
+GO
+ CREATE OR ALTER FUNCTION dbo.RomDetails()
+RETURNS TABLE
+AS
+RETURN
+(
+SELECT  toaNha.idToa,maToa,CONCAT(maToa,soPhong) AS tenPhong,phongHoc.idPhong,soPhong FROM toaNha JOIN phongHoc ON toaNha.idToa = phongHoc.idToa
+
+);
+SELECT * FROM  dbo.RomDetails()

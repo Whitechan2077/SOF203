@@ -27,7 +27,8 @@ import model.Student;
 import model.StudentDetail;
 import model.Lecture;
 import service.LectureService;
-
+import service.BuildingService;
+import model.Classroom;
 /**
  *
  * @author buidu
@@ -41,7 +42,7 @@ public class ManagerForm extends javax.swing.JFrame {
     private byte[] imageData = new byte[]{};
     private CardLayout card;
     private byte male = 1, female = 0;
-
+    private BuildingService bsv = new BuildingService();
     /**
      * Creates new form ManagerForm
      */
@@ -136,7 +137,13 @@ public class ManagerForm extends javax.swing.JFrame {
             }
         }
     }
-
+    public void fillRoomsToTable(){
+        DefaultTableModel model = (DefaultTableModel) tblBuilding.getModel();
+        model.setRowCount(0);
+        for(Classroom x : bsv.getAllBuidingDetails()){
+            System.out.println(x.toString());
+        }
+    }
     public void getStudentData(int index) {
         txtStuName.setText(stus.getAlLStudentDetail().get(index).getName());
         txtAddress.setText(stus.getAlLStudentDetail().get(index).getAddress());
@@ -187,7 +194,7 @@ public class ManagerForm extends javax.swing.JFrame {
         }
         fillStudentToTable();
     }
-
+    
     public void insertStudent(int majorId, int majorDetailsId) {
         byte male = 1;
         byte female = 0;
@@ -451,7 +458,7 @@ public class ManagerForm extends javax.swing.JFrame {
         jButton31 = new javax.swing.JButton();
         jPanel20 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblBuilding = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -1830,7 +1837,7 @@ public class ManagerForm extends javax.swing.JFrame {
 
         jPanel20.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblBuilding.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -1846,7 +1853,7 @@ public class ManagerForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane5.setViewportView(jTable1);
+        jScrollPane5.setViewportView(tblBuilding);
 
         javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
         jPanel20.setLayout(jPanel20Layout);
@@ -2067,6 +2074,7 @@ public class ManagerForm extends javax.swing.JFrame {
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
         pnRoom.setVisible(true);
+       fillRoomsToTable();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -2302,7 +2310,6 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JLabel lblImage;
     private javax.swing.JLabel lblLecture;
@@ -2316,6 +2323,7 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JRadioButton rdoLectureFemale;
     private javax.swing.JRadioButton rdoLectureMale;
     private javax.swing.JRadioButton rdoMale;
+    private javax.swing.JTable tblBuilding;
     private javax.swing.JTable tblLecture;
     private javax.swing.JTable tblMajor;
     private javax.swing.JTable tblMajor1;
