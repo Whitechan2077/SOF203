@@ -18,11 +18,10 @@ public class Classroom extends Building{
         this.rommcode = rommcode;
     }
 
-    public Classroom(int roomId, int rommcode) {
-        this.roomId = roomId;
+    public Classroom(int rommcode, int idBuiding) {
+        super(idBuiding);
         this.rommcode = rommcode;
-    }
-
+    }    
     public int getRoomId() {
         return roomId;
     }

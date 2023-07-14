@@ -20,6 +20,10 @@ public class Building {
     public Building() {
     }
 
+    public Building(int idBuiding) {
+        this.idBuiding = idBuiding;
+    }
+    
     public int getIdBuiding() {
         return idBuiding;
     }

@@ -479,3 +479,7 @@ SELECT  toaNha.idToa,maToa,CONCAT(maToa,soPhong) AS tenPhong,phongHoc.idPhong,so
 
 );
 SELECT * FROM  dbo.RomDetails()
+SELECT * FROM toaNha;
+select * from phongHoc
+DELETE FROM phongHoc where soPhong = 0
+EXEC p_insertRoom  ,  

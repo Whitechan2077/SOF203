@@ -45,4 +45,36 @@ public class BuildingService {
             Logger.getLogger(BuildingService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public LinkedList<Building> getBuildingIformations(){
+           LinkedList<Building> listBuilding = new LinkedList<>();
+        try {
+            Connection conn = DataBaseConnection.getConnection();
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("SELECT * FROM toaNha");
+            while(rs.next()){
+              listBuilding.add(new Building(rs.getInt("idToa"),rs.getString("maToa")));
+            }
+            conn.close();
+            stm.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuildingService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listBuilding;
+    }
+    
+    public void insertClassRoom(Classroom o){
+        try {
+            Connection conn = DataBaseConnection.getConnection();
+            CallableStatement cstm = conn.prepareCall("{CALL p_insertRoom (?,?)}");
+            cstm.setInt(1,o.getIdBuiding());
+            cstm.setInt(2, o.getRommcode());
+            cstm.execute();
+            conn.close();
+            cstm.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuildingService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    } 
+            
 }
