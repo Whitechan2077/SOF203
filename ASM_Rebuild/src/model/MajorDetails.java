@@ -8,9 +8,10 @@ package model;
  *
  * @author buidu
  */
-public class MajorDetails {
+public class MajorDetails{
     private int id;
     private int idMajor;
+    private String majorName;
     private String code;
     private String name;
 

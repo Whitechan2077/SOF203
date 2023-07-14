@@ -75,6 +75,5 @@ public class BuildingService {
         } catch (SQLException ex) {
             Logger.getLogger(BuildingService.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } 
-            
+    }          
 }

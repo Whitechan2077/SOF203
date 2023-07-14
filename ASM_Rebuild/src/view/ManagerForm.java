@@ -52,7 +52,7 @@ public class ManagerForm extends javax.swing.JFrame {
     public ManagerForm() {
         initComponents();
         setLocationRelativeTo(null);
-        pnClass.setVisible(false);
+        pnSubject.setVisible(false);
         pnStudent.setVisible(false);
         pnLecture.setVisible(false);
         pnMajor.setVisible(false);
@@ -359,7 +359,7 @@ public class ManagerForm extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         container = new javax.swing.JPanel();
-        pnClass = new javax.swing.JPanel();
+        pnSubject = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jPanel27 = new javax.swing.JPanel();
         jPanel28 = new javax.swing.JPanel();
@@ -648,7 +648,7 @@ public class ManagerForm extends javax.swing.JFrame {
         jPanel27.setLayout(jPanel27Layout);
         jPanel27Layout.setHorizontalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 20, Short.MAX_VALUE)
+            .addGap(0, 22, Short.MAX_VALUE)
         );
         jPanel27Layout.setVerticalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -830,37 +830,37 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout pnClassLayout = new javax.swing.GroupLayout(pnClass);
-        pnClass.setLayout(pnClassLayout);
-        pnClassLayout.setHorizontalGroup(
-            pnClassLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnClassLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnSubjectLayout = new javax.swing.GroupLayout(pnSubject);
+        pnSubject.setLayout(pnSubjectLayout);
+        pnSubjectLayout.setHorizontalGroup(
+            pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnSubjectLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnClassLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnSubjectLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(454, 454, 454))
         );
-        pnClassLayout.setVerticalGroup(
-            pnClassLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnClassLayout.createSequentialGroup()
+        pnSubjectLayout.setVerticalGroup(
+            pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnSubjectLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(pnClassLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnClassLayout.createSequentialGroup()
+                .addGroup(pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnSubjectLayout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnClassLayout.createSequentialGroup()
+                    .addGroup(pnSubjectLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        container.add(pnClass, "card3");
+        container.add(pnSubject, "card3");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel6.setText("Quản Lý Ngành");
@@ -1183,7 +1183,7 @@ public class ManagerForm extends javax.swing.JFrame {
                     .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(64, 64, 64)
                 .addComponent(jDesktopPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(513, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         container.add(pnMajorDetails, "card7");
@@ -1377,7 +1377,7 @@ public class ManagerForm extends javax.swing.JFrame {
                     .addComponent(txtLectureEmail)
                     .addComponent(txtLecturePhoneNum1)
                     .addComponent(txtLectureAddress))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
                         .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1495,7 +1495,7 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34)
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(493, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         container.add(pnLecture, "card8");
@@ -2178,7 +2178,7 @@ public class ManagerForm extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(container, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -2203,7 +2203,7 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         fillStudentToTable();
-        pnClass.setVisible(false);
+        pnSubject.setVisible(false);
         pnStudent.setVisible(true);
         pnLecture.setVisible(false);
         pnMajor.setVisible(false);
@@ -2254,7 +2254,7 @@ public class ManagerForm extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         filltoTableMajor();
         pnLecture.setVisible(false);
-        pnClass.setVisible(false);
+        pnSubject.setVisible(false);
         pnMajor.setVisible(true);
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
@@ -2278,7 +2278,7 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         pnLecture.setVisible(false);
-        pnClass.setVisible(false);
+        pnSubject.setVisible(false);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(true);
         pnStudent.setVisible(false);
@@ -2301,7 +2301,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtMajorDetailsCodeActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        pnClass.setVisible(false);
+        pnSubject.setVisible(false);
         pnStudent.setVisible(false);
         pnLecture.setVisible(true);
         pnMajor.setVisible(false);
@@ -2313,7 +2313,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        pnClass.setVisible(false);
+        pnSubject.setVisible(false);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
@@ -2325,7 +2325,7 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         pnLecture.setVisible(false);
-        pnClass.setVisible(false);
+        pnSubject.setVisible(false);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
@@ -2335,7 +2335,7 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         pnLecture.setVisible(false);
-        pnClass.setVisible(false);
+        pnSubject.setVisible(false);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
@@ -2614,12 +2614,12 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JLabel lblImage;
     private javax.swing.JLabel lblLecture;
-    private javax.swing.JPanel pnClass;
     private javax.swing.JPanel pnLecture;
     private javax.swing.JPanel pnMajor;
     private javax.swing.JPanel pnMajorDetails;
     private javax.swing.JPanel pnRoom;
     private javax.swing.JPanel pnStudent;
+    private javax.swing.JPanel pnSubject;
     private javax.swing.JRadioButton rdoFemale;
     private javax.swing.JRadioButton rdoLectureFemale;
     private javax.swing.JRadioButton rdoLectureMale;
