@@ -50,6 +50,18 @@ public class Lecture {
         this.img = img;
         this.email = email;
     }
+
+    public Lecture(int lectureid, String lectureName, int idMajor, String phoneNum, byte gender, String address, byte[] img, String email) {
+        this.lectureid = lectureid;
+        this.lectureName = lectureName;
+        this.idMajor = idMajor;
+        this.phoneNum = phoneNum;
+        this.gender = gender;
+        this.address = address;
+        this.img = img;
+        this.email = email;
+    }
+    
     
     public Lecture() {
     }
@@ -124,6 +136,11 @@ public class Lecture {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Lecture{" + "lectureid=" + lectureid + ", lectureName=" + lectureName + ", idMajor=" + idMajor + ", majorName=" + majorName + ", phoneNum=" + phoneNum + ", gender=" + gender + ", address=" + address + ", img=" + img + ", email=" + email + '}';
     }
     
     

@@ -98,12 +98,105 @@ create table ThamGiaHoc(
 	idSinhVien INT CONSTRAINT FK_IDSinhVienPhanCong FOREIGN KEY(idSinhVien) REFERENCES  Sinh_Vien(idSinhVien)
 );
 GO
+create table Diem(
+	maDiem INT IDENTITY(1,1) PRIMARY KEY,
+	idSinhVien int CONSTRAINT FK_idMarkSinhVien FOREIGN KEY(idSinhVien) REFERENCES Sinh_Vien(idSinhVien) NOT NULL,
+	idMonHoc INT  CONSTRAINT FK_SubjectId FOREIGN KEY(idMonHoc)REFERENCES Mon_Hoc(idMonHoc)NOT NULL,
+	lab1 float,
+	lab2 float,
+	lab3 float,
+	lab4 float,
+	lab5 float,
+	lab6 float,
+	lab7 float,
+	lab8 float,
+	asm1 float,
+	asm2 float,
+	asmBaoVe float,
+	tbm float,
+);
+GO
+create or alter procedure p_insertMark
+	@idSinhVien int,@idMonHoc INT,	
+	@lab1 float,
+	@lab2 float,
+	@lab3 float,
+	@lab4 float,
+	@lab5 float,
+	@lab6 float,
+	@lab7 float,
+	@lab8 float,
+	@asm1 float,
+	@asm2 float,
+	@asmBaoVe float
+AS
+	BEGIN
+	INSERT INTO Diem(idSinhVien,idMonHoc,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe)
+		VALUES(@idSinhVien,@idMonHoc,	
+	@lab1 ,
+	@lab2 ,
+	@lab3 ,
+	@lab4,
+	@lab5,
+	@lab6,
+	@lab7,
+	@lab8,
+	@asm1,
+	@asm2,
+	@asmBaoVe
+	)
+	END
+GO
+Create trigger tg_insertMark On Diem
+FOR insert
+AS
+BEGIN
+	DECLARE @mark float
+	SELECT @mark = (lab1+lab2+lab3+lab4+lab5+lab6+lab7+lab8+asm1+asm2+asmBaoVe)/11 FROM  inserted
+	INSERT INTO Diem(tbm)
+		VALUES(@mark)
+END
+GO
+Create trigger tg_updateMark On Diem
+FOR update
+AS
+BEGIN
+	DECLARE @mark float
+	SELECT @mark = (lab1+lab2+lab3+lab4+lab5+lab6+lab7+lab8+asm1+asm2+asmBaoVe)/11 FROM  inserted
+	INSERT INTO Diem(tbm)
+		VALUES(@mark)
+END
+GO
 create or alter PROCEDURE p_insertNganh
 	@maNganh varchar(5),@tenNganh nvarchar(20)
 AS
 BEGIN
 	INSERT INTO Chuyen_Nganh(maNganh,tenNganh)
 	VALUES(@maNganh,@tenNganh);
+END
+GO
+create or alter procedure p_insertClass
+	@idMonHoc INT
+AS
+BEGIN
+	INSERT INTO lopHoc(idMonHoc)
+	VALUES(@idMonHoc);
+END
+GO
+create or alter procedure p_insertPhanCong
+ @idLop INT,@idGiangVien INT,@idPhong INT,@idKy INT
+ AS
+ BEGIN
+	insert into Phan_Cong(idLop,idGiangVien,idPhong,idKy)
+		values(@idLop,@idGiangVien,@idPhong,@idKy)
+ END
+GO
+create or alter procedure p_insertClassJoining
+	@idPhanCong INT,@idSinhVien INT
+AS
+BEGIN
+	INSERT INTO ThamGiaHoc(idPhanCong,idSinhVien)
+		VALUES(@idPhanCong,@idSinhVien)
 END
 GO
 create or alter PROCEDURE p_insertNganhHep
@@ -146,7 +239,13 @@ AS
 		VALUES(@username,@password,@idSinhVien,@idGiangVien,@idCanBo)
 	END
 GO
-
+insert into Ky_hoc(maKy,tenKy)
+	VALUES('SP','Spring'),
+		  ('SU','Summer'),
+		  ('FA','Fall');
+	GO
+SELECT * FROM Ky_hoc
+SELECT * FROM Mon_Hoc
 INSERT INTO Users(username,password ,idSinhVien,idGiangVien,idCanBo)
 	VALUES('dungbhph35753@fpt.edu.vn','123',1,null,null),
 		('khuongtm@fpt.edu.vn','123',2,null,null),
@@ -163,7 +262,7 @@ INSERT INTO Users(username,password ,idSinhVien,idGiangVien,idCanBo)
 		('thuvk@fpt.edu.vn','123',13,null,null);
 GO
 GO
-insert into Ky_hoc ()
+insert into Ky_hoc()
 	VALUES();
 GO
 Create or alter procedure p_insertCanBo
@@ -245,6 +344,9 @@ for update
 	END
 Select * from users
 GO
+GO
+	SELECT * FROM phongHoc
+GO
 EXEC p_updateStudent 'Bui Dung',1,2,'0397767819','Phú Thọ','dungbhphC@fpt.edu.vn',0011,1,1;
 GO
 EXEC p_insertNganh 'IT',N'Công Nghệ Thông Tin';
@@ -300,6 +402,7 @@ EXEC p_insertUsers 'hangnt@fpt.edu.vn','123',NULL,9,NULL;
 SELECT * FROM Can_Bo_Dao_tao
 GO
 EXEC p_insertCanBo 'Bùi Hoàng Dũng','039487848','dungbh@gmail.com',0011000111,N''
+EXEC p_updateLecture 'Linh Remind',7,'0354451759','linhRemind@gmail.com',false,0011111011,'HCM',21
 GO
 SELECT * FROM Giang_Vien
 SELECT * FROM Mon_Hoc

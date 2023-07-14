@@ -102,7 +102,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="lblImage" alignment="1" min="-2" pref="238" max="-2" attributes="0"/>
@@ -179,7 +179,7 @@
                           <Component id="jLabel9" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                           <Component id="lblPhoneNum" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="34" max="32767" attributes="0"/>
+                      <EmptySpace pref="39" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
