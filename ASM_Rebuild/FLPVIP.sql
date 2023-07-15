@@ -482,4 +482,24 @@ SELECT * FROM  dbo.RomDetails()
 SELECT * FROM toaNha;
 select * from phongHoc
 DELETE FROM phongHoc where soPhong = 0
-EXEC p_insertRoom  ,  
+EXEC p_insertMonHoc 
+
+EXEC p_insertMonHoc
+GO
+CREATE OR ALTER FUNCTION dbo.SubjectData()
+RETURNS TABLE
+AS
+RETURN
+(
+Select Mon_Hoc.idMonHoc,Mon_Hoc.maMon,Mon_Hoc.tenMon,Nganh_Hep.idNganhHep,Nganh_Hep.tenNganhHep,Chuyen_Nganh.idNganh,Chuyen_Nganh.tenNganh
+	from Mon_Hoc LEFT JOIN  Nganh_Hep ON Mon_Hoc.idNganhHep = Nganh_Hep.idNganhHep LEFT JOIN Chuyen_Nganh
+	ON Mon_Hoc.idNganh= Chuyen_Nganh.idNganh
+);
+SELECT * from   dbo.SubjectData()
+
+	
+	SELECT * FROM Mon_Hoc
+	SELECT * FROM lopHoc
+	SELECT * FROM Phan_Cong
+select * from Mon_Hoc
+Select * from Nganh_Hep

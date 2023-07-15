@@ -14,22 +14,22 @@ public class Subject {
     private String subjectName;
     private int majorIdl;
     private String majorName;
-    private int majorDetails;
+    private int idMajorDetails;
     private String majorDetailsName;
 
-    public Subject(int subjectId, String subjectCode, String subjectName, int majorIdl, String majorName, int majorDetails, String majorDetailsName) {
+    public Subject(int subjectId, String subjectCode, String subjectName, int majorIdl, String majorName, int idMajorDetails, String majorDetailsName) {
         this.subjectId = subjectId;
         this.subjectCode = subjectCode;
         this.subjectName = subjectName;
         this.majorIdl = majorIdl;
         this.majorName = majorName;
-        this.majorDetails = majorDetails;
+        this.idMajorDetails = idMajorDetails;
         this.majorDetailsName = majorDetailsName;
     }
 
     public Subject() {
     }
-
+    
     public int getSubjectId() {
         return subjectId;
     }
@@ -70,12 +70,12 @@ public class Subject {
         this.majorName = majorName;
     }
 
-    public int getMajorDetails() {
-        return majorDetails;
+    public int getIdMajorDetails() {
+        return idMajorDetails;
     }
 
-    public void setMajorDetails(int majorDetails) {
-        this.majorDetails = majorDetails;
+    public void setIdMajorDetails(int idMajorDetails) {
+        this.idMajorDetails = idMajorDetails;
     }
 
     public String getMajorDetailsName() {
@@ -88,6 +88,8 @@ public class Subject {
 
     @Override
     public String toString() {
-        return "Subject{" + "subjectId=" + subjectId + ", subjectCode=" + subjectCode + ", subjectName=" + subjectName + ", majorIdl=" + majorIdl + ", majorName=" + majorName + ", majorDetails=" + majorDetails + ", majorDetailsName=" + majorDetailsName + '}';
-    }  
+        return "Subject{" + "subjectId=" + subjectId + ", subjectCode=" + subjectCode + ", subjectName=" + subjectName + ", majorIdl=" + majorIdl + ", majorName=" + majorName + ", idMajorDetails=" + idMajorDetails + ", majorDetailsName=" + majorDetailsName + '}';
+    }
+
+
 }
