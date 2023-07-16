@@ -29,7 +29,15 @@ public class Subject {
 
     public Subject() {
     }
+
+    public Subject(String subjectCode, String subjectName, int majorIdl, int idMajorDetails) {
+        this.subjectCode = subjectCode;
+        this.subjectName = subjectName;
+        this.majorIdl = majorIdl;
+        this.idMajorDetails = idMajorDetails;
+    }
     
+     
     public int getSubjectId() {
         return subjectId;
     }

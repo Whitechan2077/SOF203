@@ -24,7 +24,6 @@ import service.MajorDetailsService;
 import service.StudentService;
 import model.MajorDetails;
 import model.Student;
-import model.StudentDetail;
 import model.Lecture;
 import service.LectureService;
 import service.BuildingService;
@@ -32,6 +31,7 @@ import model.Classroom;
 import model.Building;
 import service.SubjectService;
 import model.Subject;
+
 /**
  *
  * @author buidu
@@ -46,7 +46,7 @@ public class ManagerForm extends javax.swing.JFrame {
     private CardLayout card;
     private byte male = 1, female = 0;
     private BuildingService bsv = new BuildingService();
-    private SubjectService ssv =  new  SubjectService();
+    private SubjectService ssv = new SubjectService();
 
     /**
      * Creates new form ManagerForm
@@ -55,7 +55,7 @@ public class ManagerForm extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         pnSubject.setVisible(false);
-        pnStudent.setVisible(false);
+        pnStudent.setVisible(true);
         pnLecture.setVisible(false);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
@@ -131,15 +131,15 @@ public class ManagerForm extends javax.swing.JFrame {
     public void fillStudentToTable() {
         DefaultTableModel model = (DefaultTableModel) tblStudent.getModel();
         model.setRowCount(0);
-        for (StudentDetail x : stus.getAlLStudentDetail()) {
+        for (Student x : stus.getAlLStudentDetail()) {
             if (x.getGender() == 1) {
-                model.addRow(new Object[]{"PH00" + x.getId(), x.getName(),
-                    "Nam", x.getEmail(), x.getPhoneNum(), x.getMajor(),
-                    x.getMajorDetail(), x.getAddress()});
+                model.addRow(new Object[]{"PH00" + x.getStudentId(), x.getStudentName(),
+                    "Nam", x.getEmail(), x.getPhoneNum(), x.getMajornName(),
+                    x.getMajorDetailsName(), x.getAddress()});
             } else {
-                model.addRow(new Object[]{"PH00" + x.getId(), x.getName(),
-                    "Nữ", x.getEmail(), x.getPhoneNum(), x.getMajor(),
-                    x.getMajorDetail(), x.getAddress()});
+           model.addRow(new Object[]{"PH00" + x.getStudentId(), x.getStudentName(),
+                    "Nữ", x.getEmail(), x.getPhoneNum(), x.getMajornName(),
+                    x.getMajorDetailsName(), x.getAddress()});
             }
         }
     }
@@ -164,7 +164,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }
 
     public void getStudentData(int index) {
-        txtStuName.setText(stus.getAlLStudentDetail().get(index).getName());
+        txtStuName.setText(stus.getAlLStudentDetail().get(index).getStudentName());
         txtAddress.setText(stus.getAlLStudentDetail().get(index).getAddress());
         txtEmail.setText(stus.getAlLStudentDetail().get(index).getEmail());
         txtPhoneNum.setText(stus.getAlLStudentDetail().get(index).getPhoneNum());
@@ -179,8 +179,8 @@ public class ManagerForm extends javax.swing.JFrame {
         Image scaledImage = resized.getScaledInstance(lblImage.getWidth(), lblImage.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon resizedImageIcon = new ImageIcon(scaledImage);
         lblImage.setIcon(resizedImageIcon);
-        cboMajor.setSelectedItem(stus.getAlLStudentDetail().get(index).getMajor());
-        cboMajorDetails.setSelectedItem(stus.getAlLStudentDetail().get(index).getMajorDetail());
+        cboMajor.setSelectedItem(stus.getAlLStudentDetail().get(index).getMajornName());
+        cboMajorDetails.setSelectedItem(stus.getAlLStudentDetail().get(index).getMajorDetailsName());
     }
 
     public void getLectureData(int index) {
@@ -202,38 +202,34 @@ public class ManagerForm extends javax.swing.JFrame {
         ImageIcon resizedImageIcon = new ImageIcon(scaledImage);
         lblLecture.setIcon(resizedImageIcon);
         cboLectureMajor.setSelectedItem(lsv.getAllLectureData().get(index).getMajorName());
-        cboMajorDetails.setSelectedItem(stus.getAlLStudentDetail().get(index).getMajorDetail());
+        cboMajorDetails.setSelectedItem(stus.getAlLStudentDetail().get(index).getMajorDetailsName());
     }
-  
 
     public void onload() {
         for (Major x : msv.getAllMajor()) {
-            cboMajor.addItem(x.getName());
-            cboLectureMajor.addItem(x.getName());
-            cboMajorForDetails.addItem(x.getName());
-            cboMajorForSubject.addItem(x.getName());
+            cboMajor.addItem(x.getMajornName());
+            cboLectureMajor.addItem(x.getMajornName());
+            cboMajorForDetails.addItem(x.getMajornName());
         }
         getMajorDetails();
         fillStudentToTable();
     }
 
     public void insertStudent(int majorId, int majorDetailsId) {
-        byte male = 1;
-        byte female = 0;
         if (rdoMale.isSelected()) {
-            stus.insertStudent(new Student(txtStuName.getText(), majorId, majorDetailsId, male, txtPhoneNum.getText(), txtAddress.getText(), txtEmail.getText(), this.imageData));
+            stus.insertStudent(new Student(txtStuName.getText(),this.male,txtEmail.getText(),txtAddress.getText(),txtPhoneNum.getText(), imageData, majorDetailsId, majorId));
         } else {
-            stus.insertStudent(new Student(txtStuName.getText(), majorId, majorDetailsId, female, txtPhoneNum.getText(), txtAddress.getText(), txtEmail.getText(), this.imageData));
+            stus.insertStudent(new Student(txtStuName.getText(),this.female,txtEmail.getText(),txtAddress.getText(),txtPhoneNum.getText(), imageData, majorDetailsId, majorId));
         }
     }
 
     public void insertLecture() {
         byte male = 1, female = 0;
         if (rdoLectureMale.isSelected()) {
-            lsv.insertStudent(new Lecture(txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getId(), txtLecturePhoneNum1.getText(), male, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
+            lsv.insertStudent(new Lecture(txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid(), txtLecturePhoneNum1.getText(), male, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
 
         } else {
-            lsv.insertStudent(new Lecture(txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getId(), txtLecturePhoneNum1.getText(), female, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
+            lsv.insertStudent(new Lecture(txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid(), txtLecturePhoneNum1.getText(), female, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
         }
     }
 
@@ -247,36 +243,39 @@ public class ManagerForm extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tblMajor.getModel();
         model.setRowCount(0);
         for (Major x : msv.getAllMajor()) {
-            model.addRow(new Object[]{x.getId(), x.getCode(), x.getName()});
+            model.addRow(new Object[]{x.getMajorid(), x.getMajorCode(), x.getMajornName()});
         }
     }
-      public void fillAllSubjectsDataToTable(){
-          DefaultTableModel model = (DefaultTableModel) tblSubject.getModel();
-          model.setRowCount(0);
-        for(Subject x : ssv.getrAllSubjectsData()){
-            if (x.getIdMajorDetails() == 0 ) {
-                 model.addRow(new Object[]{x.getMajorIdl(),x.getSubjectCode(),x.getSubjectName(),"Môn cở sở","Môn cơ sở" ,x.getMajorIdl(),x.getMajorName()});
-            }
-            else{
-             model.addRow(new Object[]{x.getMajorIdl(),x.getSubjectCode(),x.getSubjectName(),x.getIdMajorDetails(),x.getMajorDetailsName() ,x.getMajorIdl(),x.getMajorName()});
+
+    public void fillAllSubjectsDataToTable() {
+        DefaultTableModel model = (DefaultTableModel) tblSubject.getModel();
+        model.setRowCount(0);
+        for (Subject x : ssv.getrAllSubjectsData()) {
+            if (x.getIdMajorDetails() == 0) {
+                model.addRow(new Object[]{x.getMajorIdl(), x.getSubjectCode(), x.getSubjectName(), "Môn cở sở", "Môn cơ sở", x.getMajorIdl(), x.getMajorName()});
+            } else {
+                model.addRow(new Object[]{x.getMajorIdl(), x.getSubjectCode(), x.getSubjectName(), x.getIdMajorDetails(), x.getMajorDetailsName(), x.getMajorIdl(), x.getMajorName()});
             }
         }
     }
 
-    public void getMajorDetails() {
+    public void getMajorDetails(){
         cboMajorDetails.removeAllItems();
-        for (MajorDetails x : mdsv.getMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getId())) {
-            cboMajorDetails.addItem(x.getName());
+        for (MajorDetails x : mdsv.getMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid())) {
+            cboMajorDetails.addItem(x.getMajorDetailsName());
         }
     }
-   public void getMajorDetailsForSubject() {
+
+    public void getMajorDetailsForSubject() {
         cboMajorDetailsForSubject.removeAllItems();
-        for (MajorDetails x : mdsv.getMajorDetails(msv.getAllMajor().get(cboMajorForSubject.getSelectedIndex()).getId())) {
-            cboMajorDetailsForSubject.addItem(x.getName());
+        for (MajorDetails x : mdsv.getMajorDetails(msv.getAllMajor().get(cboMajorForSubject.getSelectedIndex()).getMajorid())) {
+            cboMajorDetailsForSubject.addItem(x.getMajorDetailsName());
         }
+        cboMajorDetailsForSubject.addItem("Môn cơ sở");
     }
+
     public void addMajorDetails(int index) {
-        mdsv.insertMajorDetails(new MajorDetails(msv.getAllMajor().get(index).getId(), txtMajorDetailsCode.getText(), TxtMajorDetailsName.getText()));
+        mdsv.insertMajorDetails(new MajorDetails(txtMajorDetailsCode.getText(),TxtMajorDetailsName.getText(),msv.getAllMajor().get(index).getMajorid()));
     }
 
     public void add() {
@@ -286,17 +285,14 @@ public class ManagerForm extends javax.swing.JFrame {
     }
 
     public void updateStudent() {
-        byte male = 1;
-        byte female = 0;
+     
         int index = tblStudent.getSelectedRow();
-        int idMajor = msv.getAllMajor().get(cboMajor.getSelectedIndex()).getId();
-        int idMajorDetails = mdsv.getMapMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getId()).get(cboMajorDetails.getSelectedItem());
+        int idMajor = msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid();
+        int idMajorDetails = mdsv.getMapMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid()).get(cboMajorDetails.getSelectedItem());
         if (rdoMale.isSelected()) {
-            stus.updateStudent(new Student(stus.getAlLStudentDetail().get(index).getId(), txtStuName.getText(), idMajor, idMajorDetails, male, txtPhoneNum.getText(), txtAddress.getText(), txtEmail.getText(), imageData));
+            stus.updateStudent(new Student(stus.getAlLStudentDetail().get(index).getMajorid(),txtStuName.getText(), male, txtEmail.getText(),txtAddress.getText(),txtPhoneNum.getText(), imageData, idMajorDetails, idMajor));
         } else {
-
-            stus.updateStudent(new Student(stus.getAlLStudentDetail().get(index).getId(), txtStuName.getText(), idMajor, idMajorDetails, female, txtPhoneNum.getText(), txtAddress.getText(), txtEmail.getText(), imageData));
-
+            stus.updateStudent(new Student(stus.getAlLStudentDetail().get(index).getMajorid(),txtStuName.getText(),female, txtEmail.getText(),txtAddress.getText(),txtPhoneNum.getText(), imageData, idMajorDetails, idMajor));
         }
         clearForm();
         imageData = new byte[]{};
@@ -305,10 +301,10 @@ public class ManagerForm extends javax.swing.JFrame {
 
     public void updateLecture(int id) {
         if (rdoLectureMale.isSelected()) {
-            lsv.updateLecture(new Lecture(id, txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getId(), txtLecturePhoneNum1.getText(), this.male, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
+            lsv.updateLecture(new Lecture(id, txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid(), txtLecturePhoneNum1.getText(), this.male, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
 
         } else {
-            lsv.updateLecture(new Lecture(id, txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getId(), txtLecturePhoneNum1.getText(), this.female, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
+            lsv.updateLecture(new Lecture(id, txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid(), txtLecturePhoneNum1.getText(), this.female, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
         }
         imageData = new byte[]{};
     }
@@ -326,13 +322,27 @@ public class ManagerForm extends javax.swing.JFrame {
 
         }
     }
-    public void insertClassRoom(){
-        int  id = bsv.getBuildingIformations().get(cboBuilding.getSelectedIndex()).getIdBuiding();
+
+    public void insertClassRoom() {
+        int id = bsv.getBuildingIformations().get(cboBuilding.getSelectedIndex()).getIdBuiding();
         System.out.println(id);
-        Classroom clrs = new Classroom(Integer.parseInt(jTextField4.getText()),id);
+        Classroom clrs = new Classroom(Integer.parseInt(jTextField4.getText()), id);
         bsv.insertClassRoom(clrs);
         System.out.println(clrs);
     }
+
+    public void insertSubject() {
+        int idMajor = msv.getAllMajor().get(cboMajorForDetails.getSelectedIndex()).getMajorid();
+        int majorDetailsId;
+        if (String.valueOf(cboMajorDetailsForSubject.getSelectedItem()).equalsIgnoreCase("môn cơ sở")) {
+            majorDetailsId = 0;
+        } else {
+            majorDetailsId = mdsv.getMajorDetails(msv.getAllMajor().get(cboMajorForSubject.getSelectedIndex()).getMajorid()).get(cboMajorDetailsForSubject.getSelectedIndex()).getMajorid();
+        }
+        Subject sj = new Subject(txtSubjectCode.getText(), txtSubjectName.getText(), idMajor, majorDetailsId);
+        ssv.insertSubject(sj);
+    }
+
     public void clearForm() {
         txtStuName.setText("");
         txtAddress.setText("");
@@ -348,7 +358,7 @@ public class ManagerForm extends javax.swing.JFrame {
     public void searchStudent(int id) {
         boolean check = false;
         for (int i = 0; i < stus.getAlLStudentDetail().size(); i++) {
-            if (stus.getAlLStudentDetail().get(i).getId() == id) {
+            if (stus.getAlLStudentDetail().get(i).getStudentId()  == id) {
                 tblStudent.setRowSelectionInterval(i, i);
                 check = true;
                 break;
@@ -381,30 +391,6 @@ public class ManagerForm extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         container = new javax.swing.JPanel();
-        pnSubject = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jPanel27 = new javax.swing.JPanel();
-        jPanel28 = new javax.swing.JPanel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        tblSubject = new javax.swing.JTable();
-        jPanel30 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel31 = new javax.swing.JLabel();
-        jLabel32 = new javax.swing.JLabel();
-        jLabel33 = new javax.swing.JLabel();
-        cboMajorForSubject = new javax.swing.JComboBox<>();
-        cboMajorDetailsForSubject = new javax.swing.JComboBox<>();
-        txtSubjectCode = new javax.swing.JTextField();
-        txtSubjectName = new javax.swing.JTextField();
-        jPanel31 = new javax.swing.JPanel();
-        jPanel29 = new javax.swing.JPanel();
-        jButton32 = new javax.swing.JButton();
-        jButton33 = new javax.swing.JButton();
-        jButton37 = new javax.swing.JButton();
-        jButton38 = new javax.swing.JButton();
-        jButton34 = new javax.swing.JButton();
-        jButton35 = new javax.swing.JButton();
-        jButton39 = new javax.swing.JButton();
         pnMajor = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jDesktopPane1 = new javax.swing.JDesktopPane();
@@ -531,6 +517,28 @@ public class ManagerForm extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblStudent = new javax.swing.JTable();
+        pnSubject = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel27 = new javax.swing.JPanel();
+        jPanel28 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tblSubject = new javax.swing.JTable();
+        jPanel30 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel31 = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
+        jLabel33 = new javax.swing.JLabel();
+        cboMajorForSubject = new javax.swing.JComboBox<>();
+        cboMajorDetailsForSubject = new javax.swing.JComboBox<>();
+        txtSubjectCode = new javax.swing.JTextField();
+        txtSubjectName = new javax.swing.JTextField();
+        jPanel31 = new javax.swing.JPanel();
+        jPanel29 = new javax.swing.JPanel();
+        jButton32 = new javax.swing.JButton();
+        jButton33 = new javax.swing.JButton();
+        jButton37 = new javax.swing.JButton();
+        jButton38 = new javax.swing.JButton();
+        jButton34 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -662,239 +670,6 @@ public class ManagerForm extends javax.swing.JFrame {
         );
 
         container.setLayout(new java.awt.CardLayout());
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel4.setText("Quản lý môn học");
-
-        javax.swing.GroupLayout jPanel27Layout = new javax.swing.GroupLayout(jPanel27);
-        jPanel27.setLayout(jPanel27Layout);
-        jPanel27Layout.setHorizontalGroup(
-            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 22, Short.MAX_VALUE)
-        );
-        jPanel27Layout.setVerticalGroup(
-            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 531, Short.MAX_VALUE)
-        );
-
-        jPanel28.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        tblSubject.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID môn học", "Mã Môn Học", "Tên Môn Học", "ID Ngành Hẹp", "Tên Ngành Hẹp", "iD ngành", "Tên Ngành"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane6.setViewportView(tblSubject);
-
-        jPanel30.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jLabel5.setText("Mã Môn Học");
-
-        jLabel31.setText("Tên Môn Học");
-
-        jLabel32.setText("Chuyên Ngành");
-
-        jLabel33.setText("Ngành hẹp");
-
-        cboMajorForSubject.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboMajorForSubjectActionPerformed(evt);
-            }
-        });
-
-        txtSubjectName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSubjectNameActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel30Layout = new javax.swing.GroupLayout(jPanel30);
-        jPanel30.setLayout(jPanel30Layout);
-        jPanel30Layout.setHorizontalGroup(
-            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel30Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel30Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel30Layout.createSequentialGroup()
-                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSubjectName)))
-                .addContainerGap(23, Short.MAX_VALUE))
-            .addGroup(jPanel30Layout.createSequentialGroup()
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel30Layout.createSequentialGroup()
-                        .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboMajorForSubject, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel30Layout.createSequentialGroup()
-                        .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboMajorDetailsForSubject, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        jPanel30Layout.setVerticalGroup(
-            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel30Layout.createSequentialGroup()
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel30Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(txtSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtSubjectName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboMajorForSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboMajorDetailsForSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel31Layout = new javax.swing.GroupLayout(jPanel31);
-        jPanel31.setLayout(jPanel31Layout);
-        jPanel31Layout.setHorizontalGroup(
-            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel31Layout.setVerticalGroup(
-            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        jPanel29.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel29.setLayout(new java.awt.GridBagLayout());
-
-        jButton32.setText("Tìm kiếm môn");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel29.add(jButton32, gridBagConstraints);
-
-        jButton33.setText("Thêm môn mới");
-        jButton33.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton33ActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel29.add(jButton33, gridBagConstraints);
-
-        jButton37.setText("Sửa  Thông Tin");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        jPanel29.add(jButton37, gridBagConstraints);
-
-        jButton38.setText("Xóa môn");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel29.add(jButton38, gridBagConstraints);
-
-        jButton34.setText("jButton32");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel29.add(jButton34, gridBagConstraints);
-
-        jButton35.setText("jButton35");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        jPanel29.add(jButton35, gridBagConstraints);
-
-        jButton39.setText("jButton39");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        jPanel29.add(jButton39, gridBagConstraints);
-
-        javax.swing.GroupLayout jPanel28Layout = new javax.swing.GroupLayout(jPanel28);
-        jPanel28.setLayout(jPanel28Layout);
-        jPanel28Layout.setHorizontalGroup(
-            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel28Layout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addGroup(jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1042, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel28Layout.createSequentialGroup()
-                        .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(55, 55, 55)
-                        .addComponent(jPanel31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(jPanel29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(7, Short.MAX_VALUE))
-        );
-        jPanel28Layout.setVerticalGroup(
-            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel28Layout.createSequentialGroup()
-                .addGroup(jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel28Layout.createSequentialGroup()
-                        .addGap(65, 65, 65)
-                        .addComponent(jPanel31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel28Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(76, 76, 76)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout pnSubjectLayout = new javax.swing.GroupLayout(pnSubject);
-        pnSubject.setLayout(pnSubjectLayout);
-        pnSubjectLayout.setHorizontalGroup(
-            pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnSubjectLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnSubjectLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(454, 454, 454))
-        );
-        pnSubjectLayout.setVerticalGroup(
-            pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnSubjectLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnSubjectLayout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnSubjectLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-
-        container.add(pnSubject, "card3");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel6.setText("Quản Lý Ngành");
@@ -2199,6 +1974,228 @@ public class ManagerForm extends javax.swing.JFrame {
 
         container.add(pnStudent, "card2");
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel4.setText("Quản lý môn học");
+
+        javax.swing.GroupLayout jPanel27Layout = new javax.swing.GroupLayout(jPanel27);
+        jPanel27.setLayout(jPanel27Layout);
+        jPanel27Layout.setHorizontalGroup(
+            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 22, Short.MAX_VALUE)
+        );
+        jPanel27Layout.setVerticalGroup(
+            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 531, Short.MAX_VALUE)
+        );
+
+        jPanel28.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        tblSubject.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID môn học", "Mã Môn Học", "Tên Môn Học", "ID Ngành Hẹp", "Tên Ngành Hẹp", "iD ngành", "Tên Ngành"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane6.setViewportView(tblSubject);
+
+        jPanel30.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel5.setText("Mã Môn Học");
+
+        jLabel31.setText("Tên Môn Học");
+
+        jLabel32.setText("Chuyên Ngành");
+
+        jLabel33.setText("Ngành hẹp");
+
+        cboMajorForSubject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboMajorForSubjectActionPerformed(evt);
+            }
+        });
+
+        txtSubjectName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSubjectNameActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel30Layout = new javax.swing.GroupLayout(jPanel30);
+        jPanel30.setLayout(jPanel30Layout);
+        jPanel30Layout.setHorizontalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel30Layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel30Layout.createSequentialGroup()
+                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSubjectName)))
+                .addContainerGap(23, Short.MAX_VALUE))
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel30Layout.createSequentialGroup()
+                        .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboMajorForSubject, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel30Layout.createSequentialGroup()
+                        .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboMajorDetailsForSubject, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel30Layout.setVerticalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel30Layout.createSequentialGroup()
+                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel30Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(txtSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSubjectName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboMajorForSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboMajorDetailsForSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel31Layout = new javax.swing.GroupLayout(jPanel31);
+        jPanel31.setLayout(jPanel31Layout);
+        jPanel31Layout.setHorizontalGroup(
+            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel31Layout.setVerticalGroup(
+            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        jPanel29.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel29.setLayout(new java.awt.GridBagLayout());
+
+        jButton32.setText("Tìm kiếm môn");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel29.add(jButton32, gridBagConstraints);
+
+        jButton33.setText("Thêm môn mới");
+        jButton33.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton33ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel29.add(jButton33, gridBagConstraints);
+
+        jButton37.setText("Sửa  Thông Tin");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel29.add(jButton37, gridBagConstraints);
+
+        jButton38.setText("Xóa môn");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel29.add(jButton38, gridBagConstraints);
+
+        jButton34.setText("jButton32");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel29.add(jButton34, gridBagConstraints);
+
+        javax.swing.GroupLayout jPanel28Layout = new javax.swing.GroupLayout(jPanel28);
+        jPanel28.setLayout(jPanel28Layout);
+        jPanel28Layout.setHorizontalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel28Layout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addGroup(jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1042, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel28Layout.createSequentialGroup()
+                        .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(55, 55, 55)
+                        .addComponent(jPanel31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(60, 60, 60)
+                        .addComponent(jPanel29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(7, Short.MAX_VALUE))
+        );
+        jPanel28Layout.setVerticalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel28Layout.createSequentialGroup()
+                .addGroup(jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel28Layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(jPanel31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel28Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel28Layout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addComponent(jPanel29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(76, 76, 76)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout pnSubjectLayout = new javax.swing.GroupLayout(pnSubject);
+        pnSubject.setLayout(pnSubjectLayout);
+        pnSubjectLayout.setHorizontalGroup(
+            pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnSubjectLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnSubjectLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(454, 454, 454))
+        );
+        pnSubjectLayout.setVerticalGroup(
+            pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnSubjectLayout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnSubjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnSubjectLayout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnSubjectLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
+        container.add(pnSubject, "card3");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -2281,7 +2278,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_cboMajorMouseClicked
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        insertStudent(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getId(), mdsv.getMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getId()).get(cboMajorDetails.getSelectedIndex()).getId());
+        insertStudent(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid(), mdsv.getMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid()).get(cboMajorDetails.getSelectedIndex()).getMajorid());
         imageData = new byte[]{};
         fillStudentToTable();
     }//GEN-LAST:event_btnAddActionPerformed
@@ -2354,11 +2351,12 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         pnLecture.setVisible(false);
-        pnSubject.setVisible(false);
+        pnSubject.setVisible(true);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
         pnRoom.setVisible(false);
+        fillAllSubjectsDataToTable();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -2462,7 +2460,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton27ActionPerformed
 
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
-       
+
         insertClassRoom();
         fillRoomsToTable();
     }//GEN-LAST:event_jButton28ActionPerformed
@@ -2472,11 +2470,13 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSubjectNameActionPerformed
 
     private void jButton33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton33ActionPerformed
-       fillAllSubjectsDataToTable();
+        insertSubject();
+        fillAllSubjectsDataToTable();
+       
     }//GEN-LAST:event_jButton33ActionPerformed
 
     private void cboMajorForSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorForSubjectActionPerformed
-       getMajorDetailsForSubject();
+        getMajorDetailsForSubject();
     }//GEN-LAST:event_cboMajorForSubjectActionPerformed
 
     /**
@@ -2561,10 +2561,8 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton33;
     private javax.swing.JButton jButton34;
-    private javax.swing.JButton jButton35;
     private javax.swing.JButton jButton37;
     private javax.swing.JButton jButton38;
-    private javax.swing.JButton jButton39;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;

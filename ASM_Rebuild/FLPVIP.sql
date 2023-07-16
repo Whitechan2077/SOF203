@@ -365,6 +365,9 @@ GO
 GO
 EXEC p_updateStudent 'Bui Dung',1,2,'0397767819','Phú Thọ','dungbhphC@fpt.edu.vn',0011,1,1;
 GO
+  CREATE OR Alter procedure p_UpdateSubject
+  AS
+GO
 EXEC p_insertNganh 'IT',N'Công Nghệ Thông Tin';
 EXEC p_insertNganhHep 1,'SD',N'Phát triển phần mềm';
 EXEC p_insertNganhHep 1,'WEB',N'Lập trình web';
@@ -417,8 +420,12 @@ EXEC p_insertUsers 'khanhph@fpt.edu.vn','123',NULL,8,NULL;
 EXEC p_insertUsers 'hangnt@fpt.edu.vn','123',NULL,9,NULL;
 SELECT * FROM Can_Bo_Dao_tao
 GO
+EXEC p_insertMonHoc  
+GO
+EXEC p_insertNganhHep 
 EXEC p_insertBuilding 
 selecT * FROM toaNha
+select * from Nganh_Hep
 GO
 EXEC p_insertCanBo 'Bùi Hoàng Dũng','039487848','dungbh@gmail.com',0011000111,N''
 EXEC p_updateLecture 'Linh Remind',7,'0354451759','linhRemind@gmail.com',false,0011111011,'HCM',21
@@ -498,8 +505,21 @@ Select Mon_Hoc.idMonHoc,Mon_Hoc.maMon,Mon_Hoc.tenMon,Nganh_Hep.idNganhHep,Nganh_
 SELECT * from   dbo.SubjectData()
 
 	
-	SELECT * FROM Mon_Hoc
 	SELECT * FROM lopHoc
 	SELECT * FROM Phan_Cong
-select * from Mon_Hoc
-Select * from Nganh_Hep
+
+select * from Chuyen_Nganh JOIN Nganh_Hep ON Chuyen_Nganh.idNganh = Nganh_Hep.idNganh where idNganh = @id
+GO
+CREATE FUNCTION GetChuyenNganhById
+(
+    @id INT
+)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT Chuyen_Nganh.idNganh,Chuyen_Nganh.maNganh,Chuyen_Nganh.tenNganh,Nganh_Hep.idNganhHep,Nganh_Hep.maNganhHep,Nganh_Hep.tenNganhHep
+    FROM Chuyen_Nganh
+    JOIN Nganh_Hep ON Chuyen_Nganh.idNganh = Nganh_Hep.idNganh
+    WHERE Nganh_Hep.idNganh = @id
+);

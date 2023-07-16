@@ -19,9 +19,9 @@ public class MajorDetailsService {
     public LinkedList< MajorDetails> getMajorDetails(int id){
         LinkedList< MajorDetails> listMajorDetails = new LinkedList<>();
         try {
-            try (Connection conn = DataBaseConnection.getConnection(); Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery("SELECT * FROM Nganh_Hep WHERE idNganh = "+id)) {
+            try (Connection conn = DataBaseConnection.getConnection(); Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery("SELECT * FROM dbo.GetChuyenNganhById("+id+")")) {
                 while (rs.next()) {
-                    listMajorDetails.add(new MajorDetails(rs.getInt("idNganhHep"),rs.getInt("idNganh"),rs.getString("maNganhHep"),rs.getString("tenNganhHep")));
+                    listMajorDetails.add(new MajorDetails(rs.getInt("idNganhHep"),rs.getString("maNganh"),rs.getString("tenNganhHep"),rs.getInt("idNganhHep"),rs.getString("tenNganh"),rs.getString("maNganh")));
                 }
             }          
         } catch (SQLException ex) {
@@ -33,9 +33,9 @@ public class MajorDetailsService {
         try {
             Connection conn  = DataBaseConnection.getConnection();
             CallableStatement csmt = conn.prepareCall("{CALL p_insertNganhHep(?,?,?)}");
-            csmt.setInt(1, o.getIdMajor());
-            csmt.setString(2,o.getCode());
-            csmt.setString(3,o.getName());
+            csmt.setInt(1, o.getMajorid());
+            csmt.setString(2,o.getMajorDetailsCode());
+            csmt.setString(3,o.getMajorDetailsName());
             csmt.execute();
             conn.close();
             csmt.close();

@@ -9,52 +9,58 @@ package model;
  * @author buidu
  */
 public class Major {
-    private int id;
-    private String name;
-    private String code;
+    private int Majorid;
+    private String majornName;
+    private String majorCode;
 
     public Major() {
     }
 
-    public Major(int id, String name, String code) {
-        this.id = id;
-        this.name = name;
-        this.code = code;
+    public Major(int Majorid, String majornName, String majorCode) {
+        this.Majorid = Majorid;
+        this.majornName = majornName;
+        this.majorCode = majorCode;
     }
 
-    public Major(String name, String code) {
-        this.name = name;
-        this.code = code;
+    public Major(String majornName, String majorCode) {
+        this.majornName = majornName;
+        this.majorCode = majorCode;
+    }
+
+    public Major(int Majorid, String majornName) {
+        this.Majorid = Majorid;
+        this.majornName = majornName;
     }
     
-    public int getId() {
-        return id;
+    public Major(int Majorid) {
+        this.Majorid = Majorid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getMajorid() {
+        return Majorid;
     }
 
-    public String getName() {
-        return name;
+    public void setMajorid(int Majorid) {
+        this.Majorid = Majorid;
+    }
+    public String getMajornName() {
+        return majornName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMajornName(String majornName) {
+        this.majornName = majornName;
     }
 
-    public String getCode() {
-        return code;
+    public String getMajorCode() {
+        return majorCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setMajorCode(String majorCode) {
+        this.majorCode = majorCode;
     }
-
     @Override
     public String toString() {
-        return "Major{" + "id=" + id + ", name=" + name + ", code=" + code + '}';
+        return "Major{" + "Majorid=" + Majorid + ", majornName=" + majornName + ", majorCode=" + majorCode + '}';
     }
-    
-    
+  
 }

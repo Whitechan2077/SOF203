@@ -60,8 +60,8 @@ public class MajorService {
         try {
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertNganh (?,?)}");
-            cstm.setString(1,o.getCode());
-            cstm.setString(2, o.getName());
+            cstm.setString(1,o.getMajorCode());
+            cstm.setString(2, o.getMajornName());
             cstm.execute();
             conn.close();
             cstm.close();

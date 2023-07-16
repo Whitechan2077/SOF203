@@ -34,13 +34,13 @@ public class StudentForm extends javax.swing.JFrame {
     }
     public void onLoad(){
         System.out.println(UserService.getCurrentUser().toString());
-        lblYourName.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getName());
-        lblStudentId.setText("PH0"+String.valueOf(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getId()));
-        lblStudentName.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getName());
+        lblYourName.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getStudentName());
+        lblStudentId.setText("PH0"+String.valueOf(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getStudentId()));
+        lblStudentName.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getStudentName());
         lblEmail.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getEmail());
         lblAdd.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getAddress());
-        lblMajor.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getMajor());
-        lblMajorDetail.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getMajorDetail());
+        lblMajor.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getMajornName());
+        lblMajorDetail.setText(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getMajorDetailsName());
         if(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getGender() == 1){
             lblGender.setText("Nam");
         }

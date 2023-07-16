@@ -8,53 +8,49 @@ package model;
  *
  * @author buidu
  */
-public class Student {
+public class Student extends MajorDetails{
     private int studentId;
     private String studentName;
-    private int idMajor;
-    private int idMajorDetail;
     private byte gender;
-    private String phoneNum;
-    private String address;
     private String email;
+    private String address;
+    private String phoneNum;
     private byte[] image;
 
-    public Student(int studentId, String studentName, int idMajor, int idMajorDetail, byte gender, String phoneNum, String address, String email, byte[] image) {
+    public Student(int studentId, String studentName, byte gender, String email, String address, String phoneNum, byte[] image, int majorDetaisId, String majorDetailsName, int Majorid, String majornName) {
+        super(majorDetaisId, majorDetailsName, Majorid, majornName);
         this.studentId = studentId;
         this.studentName = studentName;
-        this.idMajor = idMajor;
-        this.idMajorDetail = idMajorDetail;
         this.gender = gender;
-        this.phoneNum = phoneNum;
-        this.address = address;
         this.email = email;
+        this.address = address;
+        this.phoneNum = phoneNum;
         this.image = image;
     }
 
-    public Student(String studentName, int idMajor, int idMajorDetail, byte gender, String phoneNum, String address, String email, byte[] image) {
+    public Student(String studentName, byte gender, String email, String address, String phoneNum, byte[] image, int majorDetaisId, int Majorid) {
+        super(majorDetaisId, Majorid);
         this.studentName = studentName;
-        this.idMajor = idMajor;
-        this.idMajorDetail = idMajorDetail;
         this.gender = gender;
-        this.phoneNum = phoneNum;
-        this.address = address;
         this.email = email;
+        this.address = address;
+        this.phoneNum = phoneNum;
         this.image = image;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
+    public Student(int studentId, String studentName, byte gender, String email, String address, String phoneNum, byte[] image, int majorDetaisId, int Majorid) {
+        super(majorDetaisId, Majorid);
+        this.studentId = studentId;
+        this.studentName = studentName;
+        this.gender = gender;
+        this.email = email;
+        this.address = address;
+        this.phoneNum = phoneNum;
         this.image = image;
     }
-
-
     
     public Student() {
     }
-    
 
     public int getStudentId() {
         return studentId;
@@ -72,44 +68,12 @@ public class Student {
         this.studentName = studentName;
     }
 
-    public int getIdMajor() {
-        return idMajor;
-    }
-
-    public void setIdMajor(int idMajor) {
-        this.idMajor = idMajor;
-    }
-
-    public int getIdMajorDetail() {
-        return idMajorDetail;
-    }
-
-    public void setIdMajorDetail(int idMajorDetail) {
-        this.idMajorDetail = idMajorDetail;
-    }
-
     public byte getGender() {
         return gender;
     }
 
     public void setGender(byte gender) {
         this.gender = gender;
-    }
-
-    public String getPhoneNum() {
-        return phoneNum;
-    }
-
-    public void setPhoneNum(String phoneNum) {
-        this.phoneNum = phoneNum;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getEmail() {
@@ -120,11 +84,28 @@ public class Student {
         this.email = email;
     }
 
-
-
-    @Override
-    public String toString() {
-        return "Student{" + "studentId=" + studentId + ", studentName=" + studentName + ", idMajor=" + idMajor + ", idMajorDetail=" + idMajorDetail + ", gender=" + gender + ", phoneNum=" + phoneNum + ", address=" + address + ", email=" + email + ", image=" + image + '}';
+    public String getAddress() {
+        return address;
     }
-    
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+                       
 }

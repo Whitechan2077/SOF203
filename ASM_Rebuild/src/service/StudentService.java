@@ -3,16 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package service;
-import model.StudentDetail;
+import model.Student;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utilities.DataBaseConnection;
-import model.Student;
 public class StudentService {
-    public StudentDetail getStudentDetail(int studentId){
-          StudentDetail stu = new StudentDetail();
+    public Student getStudentDetail(int studentId){
+          Student stu = new Student();
         try {          
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("""
@@ -21,13 +20,13 @@ public class StudentService {
             cstm.setInt(1, studentId);
             ResultSet rs = cstm.executeQuery();
             while(rs.next()){
-                stu.setId(rs.getInt("idSinhVien"));
-                stu.setName(rs.getString("tenSinhVien"));
+                stu.setStudentId(rs.getInt("idSinhVien"));
+                stu.setStudentName(rs.getString("tenSinhVien"));
                 stu.setGender(rs.getByte("gioiTinh"));
                 stu.setEmail(rs.getString("email"));
                 stu.setAddress(rs.getString("diaChi"));
-                stu.setMajor(rs.getString("tenNganh"));
-                stu.setMajorDetail(rs.getString("tennganhHep"));
+                stu.setMajornName(rs.getString("tenNganh"));
+                stu.setMajorDetailsName(rs.getString("tennganhHep"));
                 stu.setPhoneNum(rs.getString("sdt"));
                 stu.setImage(rs.getBytes("hinhAnh"));
             }
@@ -39,24 +38,24 @@ public class StudentService {
         }
         return stu;
     }
-    public LinkedList<StudentDetail> getAlLStudentDetail(){
-          LinkedList<StudentDetail> listStudent = new LinkedList<>();
+    public LinkedList<Student> getAlLStudentDetail(){
+          LinkedList<Student> listStudent = new LinkedList<>();
         try {          
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("SELECT * FROm dbo.GetStudentData()");
             ResultSet rs = cstm.executeQuery();
             while(rs.next()){
-                StudentDetail stu = new StudentDetail();
-                stu.setId(rs.getInt("idSinhVien"));
-                stu.setName(rs.getString("tenSinhVien"));
+                Student stu = new Student();
+                stu.setStudentId(rs.getInt("idSinhVien"));
+                stu.setStudentName(rs.getString("tenSinhVien"));
                 stu.setGender(rs.getByte("gioiTinh"));
                 stu.setEmail(rs.getString("email"));
                 stu.setAddress(rs.getString("diaChi"));
-                stu.setMajor(rs.getString("tenNganh"));
-                stu.setMajorDetail(rs.getString("tennganhHep"));
+                stu.setMajornName(rs.getString("tenNganh"));
+                stu.setMajorDetailsName(rs.getString("tennganhHep"));
                 stu.setPhoneNum(rs.getString("sdt"));
                 stu.setImage(rs.getBytes("hinhAnh"));
-                stu.setMajorId(rs.getInt("idNganh"));
+                stu.setMajorid(rs.getInt("idNganh"));
                 listStudent.add(stu);
             }
             cstm.close();
@@ -72,8 +71,8 @@ public class StudentService {
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertSinhVien (?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getStudentName());
-            cstm.setInt(2, o.getIdMajor());
-            cstm.setInt(3, o.getIdMajorDetail());
+            cstm.setInt(2, o.getMajorid());
+            cstm.setInt(3, o.getMajorDetaisId());
             cstm.setString(4,o.getPhoneNum());
             cstm.setString(5,o.getAddress());
             cstm.setString(6, o.getEmail());
@@ -92,8 +91,8 @@ public class StudentService {
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_updateStudent (?,?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getStudentName());
-            cstm.setInt(2, o.getIdMajor());
-            cstm.setInt(3, o.getIdMajorDetail());
+            cstm.setInt(2, o.getMajorid());
+            cstm.setInt(3, o.getMajorDetaisId());
             cstm.setString(4,o.getPhoneNum());
             cstm.setString(5,o.getAddress());
             cstm.setString(6, o.getEmail());

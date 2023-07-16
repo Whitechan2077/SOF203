@@ -8,62 +8,60 @@ package model;
  *
  * @author buidu
  */
-public class MajorDetails{
-    private int id;
-    private int idMajor;
-    private String majorName;
-    private String code;
-    private String name;
+public class MajorDetails extends Major{
+    private int majorDetaisId;
+    private String majorDetailsCode;
+    private String majorDetailsName;
 
-    public MajorDetails(int id, int idMajor, String code, String name) {
-        this.id = id;
-        this.idMajor = idMajor;
-        this.code = code;
-        this.name = name;
+    public MajorDetails(int majorDetaisId, String majorDetailsCode, String majorDetailsName, int id, String majornName, String majorCode) {
+        super(id, majornName, majorCode);
+        this.majorDetaisId = majorDetaisId;
+        this.majorDetailsCode = majorDetailsCode;
+        this.majorDetailsName = majorDetailsName;
     }
 
-    public MajorDetails(int idMajor, String code, String name) {
-        this.idMajor = idMajor;
-        this.code = code;
-        this.name = name;
+    public MajorDetails(String majorDetailsCode, String majorDetailsName, int Majorid) {
+        super(Majorid);
+        this.majorDetailsCode = majorDetailsCode;
+        this.majorDetailsName = majorDetailsName;
     }
 
-    public int getId() {
-        return id;
+    public MajorDetails(int majorDetaisId, String majorDetailsName, int Majorid, String majornName) {
+        super(Majorid, majornName);
+        this.majorDetaisId = majorDetaisId;
+        this.majorDetailsName = majorDetailsName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public MajorDetails() {
     }
 
-    public int getIdMajor() {
-        return idMajor;
-    }
-
-    public void setIdMajor(int idMajor) {
-        this.idMajor = idMajor;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "MajorDetails{" + "id=" + id + ", idMajor=" + idMajor + ", code=" + code + ", name=" + name + '}';
+    public MajorDetails(int majorDetaisId, int Majorid) {
+        super(Majorid);
+        this.majorDetaisId = majorDetaisId;
     }
     
     
+    public int getMajorDetaisId() {
+        return majorDetaisId;
+    }
+
+    public void setMajorDetaisId(int majorDetaisId) {
+        this.majorDetaisId = majorDetaisId;
+    }
+
+    public String getMajorDetailsCode() {
+        return majorDetailsCode;
+    }
+
+    public void setMajorDetailsCode(String majorDetailsCode) {
+        this.majorDetailsCode = majorDetailsCode;
+    }
+
+    public String getMajorDetailsName() {
+        return majorDetailsName;
+    }
+
+    public void setMajorDetailsName(String majorDetailsName) {
+        this.majorDetailsName = majorDetailsName;
+    } 
 }

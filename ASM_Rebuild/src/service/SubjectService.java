@@ -31,4 +31,26 @@ public class SubjectService {
         }
         return  listSubjet;
     }
+    public void insertSubject(Subject o){
+        try {
+            Connection conn =  DataBaseConnection.getConnection();
+            CallableStatement cstm = conn.prepareCall("{CALL p_insertMonHoc (?,?,?,?)}");
+            cstm.setInt(1, o.getMajorIdl());
+            if (o.getIdMajorDetails() ==0) {
+                cstm.setObject(2, null);
+            }
+            else{
+                cstm.setInt(2, o.getIdMajorDetails());
+
+            }
+            cstm.setString(3, o.getSubjectName());
+            cstm.setString(4,o.getSubjectCode());
+            cstm.execute();
+            conn.close();
+            cstm.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println(o.toString());
+    }
 }
