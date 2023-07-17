@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -60,6 +59,7 @@ public class ManagerForm extends javax.swing.JFrame {
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
         pnRoom.setVisible(false);
+        pnSubject.setVisible(false);
     }
 
     public void openFile() {
@@ -320,7 +320,12 @@ public class ManagerForm extends javax.swing.JFrame {
 
         }
     }
-
+    public void getAllSubject(){
+        CboSubject.removeAllItems();
+        for(Subject x :ssv.getrAllSubjectsData()){
+            CboSubject.addItem(x.getSubjectCode());
+        }
+    }
     public void insertClassRoom() {
         int id = bsv.getBuildingIformations().get(cboBuilding.getSelectedIndex()).getIdBuiding();
         System.out.println(id);
@@ -545,11 +550,9 @@ public class ManagerForm extends javax.swing.JFrame {
         jToggleButton1 = new javax.swing.JToggleButton();
         jToggleButton2 = new javax.swing.JToggleButton();
         jToggleButton3 = new javax.swing.JToggleButton();
-        jToggleButton4 = new javax.swing.JToggleButton();
         jPanel38 = new javax.swing.JPanel();
         jLabel34 = new javax.swing.JLabel();
-        jLabel35 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        CboSubject = new javax.swing.JComboBox<>();
         jScrollPane7 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel33 = new javax.swing.JPanel();
@@ -2205,25 +2208,34 @@ public class ManagerForm extends javax.swing.JFrame {
 
         jPanel36.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jToggleButton1.setText("jToggleButton1");
+        jToggleButton1.setText("Thêm lớp");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
         jPanel37.add(jToggleButton1);
 
-        jToggleButton2.setText("jToggleButton2");
+        jToggleButton2.setText("Xoa Lớp");
+        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton2ActionPerformed(evt);
+            }
+        });
         jPanel37.add(jToggleButton2);
 
-        jToggleButton3.setText("jToggleButton3");
+        jToggleButton3.setText("Sửa lớp");
         jPanel37.add(jToggleButton3);
-
-        jToggleButton4.setText("jToggleButton4");
-        jPanel37.add(jToggleButton4);
 
         jPanel38.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel34.setText("Môn Học");
+        jLabel34.setText("Môn Học :");
 
-        jLabel35.setText("Giảng  Viên");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        CboSubject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CboSubjectActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel38Layout = new javax.swing.GroupLayout(jPanel38);
         jPanel38.setLayout(jPanel38Layout);
@@ -2231,23 +2243,19 @@ public class ManagerForm extends javax.swing.JFrame {
             jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel38Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
-                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel34, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CboSubject, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel38Layout.setVerticalGroup(
             jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel38Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(39, 39, 39)
                 .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                    .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CboSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel36Layout = new javax.swing.GroupLayout(jPanel36);
@@ -2257,7 +2265,7 @@ public class ManagerForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel36Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel37, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(80, 80, 80))
         );
@@ -2268,18 +2276,15 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addGroup(jPanel36Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(87, Short.MAX_VALUE))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Mã  lớp", "Tên môn"
             }
         ));
         jScrollPane7.setViewportView(jTable1);
@@ -2299,7 +2304,7 @@ public class ManagerForm extends javax.swing.JFrame {
             jPanel35Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel35Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel36, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel36, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -2413,13 +2418,13 @@ public class ManagerForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        fillStudentToTable();
         pnSubject.setVisible(false);
         pnStudent.setVisible(true);
         pnLecture.setVisible(false);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
         pnRoom.setVisible(false);
+        pnSubject.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -2464,12 +2469,15 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         filltoTableMajor();
+        pnSubject.setVisible(false);
         pnLecture.setVisible(false);
         pnSubject.setVisible(false);
         pnMajor.setVisible(true);
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
         pnRoom.setVisible(false);
+                pnSubject.setVisible(false);
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnAddMajorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMajorActionPerformed
@@ -2486,12 +2494,15 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodeActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        pnLecture.setVisible(false);
+        pnClassJoining.setVisible(false);
+        pnLecture.setVisible(true);
         pnSubject.setVisible(false);
         pnMajor.setVisible(false);
-        pnMajorDetails.setVisible(true);
+        pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
         pnRoom.setVisible(false);
+        pnSubject.setVisible(false);
+
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void btnAddMajor1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMajor1ActionPerformed
@@ -2508,6 +2519,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtMajorDetailsCodeActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        pnClassJoining.setVisible(false);
         pnSubject.setVisible(false);
         pnStudent.setVisible(false);
         pnLecture.setVisible(true);
@@ -2515,30 +2527,38 @@ public class ManagerForm extends javax.swing.JFrame {
         pnMajorDetails.setVisible(false);
         fillAllLectureToTable();
         pnRoom.setVisible(false);
+        pnSubject.setVisible(false);
+        
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        getAllSubject();        
+        pnClassJoining.setVisible(true);
         pnSubject.setVisible(false);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
         pnLecture.setVisible(false);
-        pnRoom.setVisible(true);
-        pnRoom.setVisible(true);
+        pnRoom.setVisible(false);
+        pnSubject.setVisible(false);
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        pnSubject.setVisible(false);
         pnLecture.setVisible(false);
         pnSubject.setVisible(true);
         pnMajor.setVisible(false);
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
-        pnRoom.setVisible(false);
+        pnRoom.setVisible(false);        
+        pnSubject.setVisible(true);
         fillAllSubjectsDataToTable();
+        getMajorDetailsForSubject();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        pnSubject.setVisible(false);
         pnLecture.setVisible(false);
         pnSubject.setVisible(false);
         pnMajor.setVisible(false);
@@ -2655,8 +2675,20 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton33ActionPerformed
 
     private void cboMajorForSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorForSubjectActionPerformed
-        getMajorDetailsForSubject();
+
     }//GEN-LAST:event_cboMajorForSubjectActionPerformed
+
+    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    private void CboSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CboSubjectActionPerformed
+
+    }//GEN-LAST:event_CboSubjectActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -2694,6 +2726,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> CboSubject;
     private javax.swing.JTextField TxtMajorDetailsName;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnAdd1;
@@ -2748,7 +2781,6 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JDesktopPane jDesktopPane2;
     private javax.swing.JLabel jLabel1;
@@ -2779,7 +2811,6 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
-    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -2838,7 +2869,6 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
-    private javax.swing.JToggleButton jToggleButton4;
     private javax.swing.JLabel lblImage;
     private javax.swing.JLabel lblLecture;
     private javax.swing.JPanel pnClassJoining;
