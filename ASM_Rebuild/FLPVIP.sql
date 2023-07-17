@@ -78,6 +78,7 @@ Go
 Create table lopHoc(
 	idLop INT IDENTITY(1,1) PRIMARY KEY,
 	idMonHoc INT CONSTRAINT FK_IDMonChoLop FOREIGN KEY(idMonHoc) REFERENCES Mon_Hoc(idMonHoc), 
+	maMonHoc varchar(10)
 );
 create table Ky_hoc(
 	idKy INT IDENTITY(1,1) PRIMARY KEY,
@@ -182,6 +183,25 @@ BEGIN
 	INSERT INTO lopHoc(idMonHoc)
 	VALUES(@idMonHoc);
 END
+GO
+CREATE OR ALTER trigger tg_genSubjectCode ON lopHoc
+for insert
+AS
+BEGIN
+	DECLARE @subjectCode varchar(10),@idClass int,@classCode varchar(10),@idSubject int
+	SELECT @idClass = idLop FROM inserted
+	SELECT @idSubject = idMonHoc FROM inserted
+	SELECT @subjectCode = maMon FROM Mon_Hoc WHERE idMonHoc = @idSubject
+	SET @classCode = @subjectCode+'.'+CAST(@idClass AS varchar(5))
+	UPDATE lopHoc SET maLop = @classCode WHERE idLop = @idClass
+END
+GO
+EXEC p_insertClass 34; 
+GO
+SELECT  * FROM Mon_Hoc
+SELECT * FROM lopHoc
+ALTER TABLE lopHoc
+	ADD maLop varchar(10)
 GO
 create or alter procedure p_insertPhanCong
  @idLop INT,@idGiangVien INT,@idPhong INT,@idKy INT
@@ -322,6 +342,8 @@ FOR insert
 		INSERT INTO Users(username,password ,idSinhVien,idGiangVien,idCanBo)
 			VALUES(@username,'123',null,null,@idCanBo);
 	END
+GO
+
 GO
 Create or alter PROCEDURE p_updateStudent
 		@tenSinhVien nvarchar(25),@idNganh  int,@idNganhHep int,@sdt varchar(10),@diaChi nvarchar(80),@email varchar(100),@hinhAnh VARBINARY(MAX),@gioiTinh bit,@idSinhVien int
@@ -531,8 +553,7 @@ Select Mon_Hoc.idMonHoc,Mon_Hoc.maMon,Mon_Hoc.tenMon,Nganh_Hep.idNganhHep,Nganh_
 	from Mon_Hoc LEFT JOIN  Nganh_Hep ON Mon_Hoc.idNganhHep = Nganh_Hep.idNganhHep LEFT JOIN Chuyen_Nganh
 	ON Mon_Hoc.idNganh= Chuyen_Nganh.idNganh
 );
-SELECT * from   dbo.SubjectData()
-
+SELECT * from   dbo.SubjectData();
 	
 	SELECT * FROM lopHoc
 	SELECT * FROM Phan_Cong
@@ -553,3 +574,11 @@ RETURN
     WHERE Nganh_Hep.idNganh = @id
 );select * from dbo.LectureData();
 EXEC p_insertMonHoc 
+GO
+CREATE OR ALTER FUNCTION dbo.GetClassData()
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT maLop FROM lopHoc JOIN Mon_Hoc ON lopHoc.idMonHoc = 
+);
