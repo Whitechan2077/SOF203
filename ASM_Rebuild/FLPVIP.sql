@@ -580,5 +580,6 @@ RETURNS TABLE
 AS
 RETURN
 (
-	SELECT maLop FROM lopHoc JOIN Mon_Hoc ON lopHoc.idMonHoc = 
+	SELECT maLop,Mon_Hoc.tenMon FROM lopHoc JOIN Mon_Hoc ON lopHoc.idMonHoc = Mon_Hoc.idMonHoc
 );
+SELECT * FROM GetClassData()
