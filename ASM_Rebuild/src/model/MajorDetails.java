@@ -31,7 +31,7 @@ public class MajorDetails extends Major{
         this.majorDetaisId = majorDetaisId;
         this.majorDetailsName = majorDetailsName;
     }
-
+    
     public MajorDetails() {
     }
 

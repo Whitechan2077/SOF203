@@ -21,7 +21,7 @@ public class LectureService {
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("select * from dbo.LectureData()");
             while (rs.next()) {                
-                listLecture.add(new Lecture(rs.getInt("idGiangVien"),rs.getString("tenGiangVien"),rs.getString("tenNganh"),rs.getString("sdt"),rs.getByte("gioiTinh"),rs.getString("diaChi"),rs.getBytes("hinhAnh"),rs.getString("email")));
+                listLecture.add(new Lecture(rs.getInt("idGiangVien"),rs.getString("tenGiangVien"),rs.getString("sdt"),rs.getByte("gioiTinh"),rs.getString("diaChi"),rs.getBytes("hinhAnh"),rs.getString("email"),rs.getInt("idNganh"), rs.getString("tenNganh")));
             }
             conn.close();
             stm.close();
@@ -37,7 +37,7 @@ public class LectureService {
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertLecture (?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getLectureName());
-            cstm.setInt(2, o.getIdMajor());
+            cstm.setInt(2, o.getMajorid());
             cstm.setString(4, o.getEmail());
             cstm.setString(3, o.getPhoneNum());
             cstm.setByte(5,o.getGender());
@@ -56,13 +56,13 @@ public class LectureService {
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_updateLecture(?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getLectureName());
-            cstm.setInt(2, o.getIdMajor());
+            cstm.setInt(2, o.getMajorid());
             cstm.setString(4, o.getEmail());
             cstm.setString(3, o.getPhoneNum());
             cstm.setByte(5,o.getGender());
             cstm.setBytes(6, o.getImg());
             cstm.setString(7, o.getAddress());
-            cstm.setInt(8,o.getLectureid());
+            cstm.setInt(8,o.getLectureId());
             System.out.println(o.toString());
             cstm.execute();
             cstm.close();

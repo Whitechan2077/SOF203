@@ -19,7 +19,7 @@ create table Mon_Hoc(
 	idNganh  int CONSTRAINT FK_maNganhMon FOREIGN KEY (idNganh) REFERENCES Chuyen_Nganh(idNganh) NOT NULL,
 	idNganhHep int CONSTRAINT FK_maNganhHepMon FOREIGN KEY (idNganhHep) REFERENCES  Nganh_Hep(idNganhHep),
 	tenMon nvarchar(20) NOT NULL,
-	maMon varchar(10) NOT NULL
+	maMon varchar(10)
 );
 	GO
 create table Sinh_Vien(
@@ -208,12 +208,13 @@ BEGIN
 END
 GO
 create or alter PROCEDURE p_insertMonHoc
-	@idNganh  int,@idNganhHep int,@tenMon nvarchar(20),@maMon varchar(10)
+	@idNganh  int,@idNganhHep int,@tenMon nvarchar(20)
 AS
 BEGIN
-	INSERT INTO  Mon_Hoc(idNganh,idNganhHep,tenMon,maMon)
-	VALUES(@idNganh,@idNganhHep,@tenMon,@maMon);
+	INSERT INTO  Mon_Hoc(idNganh,idNganhHep,tenMon)
+	VALUES(@idNganh,@idNganhHep,@tenMon);
 END
+SELECT * FROM Mon_Hoc
 GO
 create or alter PROCEDURE p_insertSinhVien
 	@tenSinhVien nvarchar(25),@idNganh  int,@idNganhHep int,@sdt varchar(10),@diaChi nvarchar(80),@email varchar(100),@hinhAnh VARBINARY(MAX),@gioiTinh bit
@@ -361,8 +362,36 @@ for update
 Select * from users
 GO
 GO
-	SELECT * FROM phongHoc
+	SELECT * FROM Mon_Hoc
 GO
+create or alter trigger tg_autoInsertSubjectCode ON  Mon_Hoc
+for insert
+AS
+BEGIN
+	DECLARE @subJectId int,@maJorId int,@majorDetailsId int,@MajorDetailsCode varchar(5),@maMon nvarchar(20)
+	SELECT @subJectId = idMonHoc,@maJorId=idNganh,@majorDetailsId=idNganhHep FROM inserted
+	SELECT @MajorDetailsCode=maNganhHep FROM Nganh_Hep WHERE idNganhHep = @majorDetailsId
+	print 'alo '+Cast(@majorDetailsId AS varchar);
+	IF(@majorDetailsId is not null)
+	BEGIN
+		SET @maMon =@MajorDetailsCode+CAST(@maJorId AS varchar(5))+CAST(@majorDetailsId AS varchar(5))+CAST(@subJectId AS varchar(5))
+				UPDATE Mon_Hoc SET maMon = @maMon
+			WHERE idMonHoc = @subJectId
+		
+	END
+	ELSE
+	BEGIN
+			SET @maMon ='COM'+CAST(@maJorId AS varchar(5))+CAST(0 as varchar(5))+CAST(@subJectId AS varchar(5))
+		UPDATE Mon_Hoc SET maMon = @maMon
+			WHERE idMonHoc = @subJectId
+	END
+END
+Go
+EXEC p_insertMonHoc  1,NULL,'Font-End';
+DELETE FROM Mon_Hoc WHERE idNganhHep is null
+SELECT * FROM Mon_Hoc 
+SELECT * FROM Chuyen_Nganh
+SELECT * FROM Nganh_Hep
 EXEC p_updateStudent 'Bui Dung',1,2,'0397767819','Phú Thọ','dungbhphC@fpt.edu.vn',0011,1,1;
 GO
   CREATE OR Alter procedure p_UpdateSubject
@@ -473,7 +502,7 @@ RETURNS TABLE
 AS
 RETURN
 (
-SELECT Giang_Vien.idGiangVien,Giang_Vien.tenGiangVien,Giang_Vien.gioiTinh,Giang_Vien.email,Giang_Vien.diaChi,Chuyen_Nganh.tenNganh,Giang_Vien.hinhAnh,Giang_Vien.sdt 
+SELECT Giang_Vien.idGiangVien,Giang_Vien.tenGiangVien,Giang_Vien.gioiTinh,Giang_Vien.email,Giang_Vien.diaChi,Chuyen_Nganh.tenNganh,Giang_Vien.hinhAnh,Giang_Vien.sdt,Giang_Vien.idNganh 
 	FROM Giang_Vien JOIN Chuyen_Nganh ON Giang_Vien.idNganh = Chuyen_Nganh.idNganh
 );
 GO
@@ -522,4 +551,5 @@ RETURN
     FROM Chuyen_Nganh
     JOIN Nganh_Hep ON Chuyen_Nganh.idNganh = Nganh_Hep.idNganh
     WHERE Nganh_Hep.idNganh = @id
-);
+);select * from dbo.LectureData();
+EXEC p_insertMonHoc 

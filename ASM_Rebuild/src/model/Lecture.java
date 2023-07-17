@@ -8,53 +8,19 @@ package model;
  *
  * @author buidu
  */
-public class Lecture {
-    private int lectureid;
+public class Lecture extends Major{
+    private int lectureId;
     private String lectureName;
-    private int idMajor;
-    private String majorName;
     private String phoneNum;
     private byte gender;
     private String address;
     private byte[] img;
     private String email;
-    
-    public Lecture(int lectureid, String lectureName, int idMajor, String majorName, String phoneNum, byte gender, String address, byte[] img) {
-        this.lectureid = lectureid;
-        this.lectureName = lectureName;
-        this.idMajor = idMajor;
-        this.majorName = majorName;
-        this.phoneNum = phoneNum;
-        this.gender = gender;
-        this.address = address;
-        this.img = img;
-    }
 
-    public Lecture(int lectureid, String lectureName, String majorName, String phoneNum, byte gender, String address, byte[] img,String email) {
-        this.lectureid = lectureid;
+    public Lecture(int lectureId, String lectureName, String phoneNum, byte gender, String address, byte[] img, String email, int Majorid, String majornName) {
+        super(Majorid, majornName);
+        this.lectureId = lectureId;
         this.lectureName = lectureName;
-        this.majorName = majorName;
-        this.phoneNum = phoneNum;
-        this.gender = gender;
-        this.address = address;
-        this.img = img;
-        this.email = email;
-    }
-
-    public Lecture(String lectureName, int idMajor, String phoneNum, byte gender, String address, byte[] img, String email) {
-        this.lectureName = lectureName;
-        this.idMajor = idMajor;
-        this.phoneNum = phoneNum;
-        this.gender = gender;
-        this.address = address;
-        this.img = img;
-        this.email = email;
-    }
-
-    public Lecture(int lectureid, String lectureName, int idMajor, String phoneNum, byte gender, String address, byte[] img, String email) {
-        this.lectureid = lectureid;
-        this.lectureName = lectureName;
-        this.idMajor = idMajor;
         this.phoneNum = phoneNum;
         this.gender = gender;
         this.address = address;
@@ -62,16 +28,33 @@ public class Lecture {
         this.email = email;
     }
     
+    public Lecture(int lectureId, String lectureName, String phoneNum, byte gender, String address, byte[] img, String email, int Majorid) {
+        super(Majorid);
+        this.lectureId = lectureId;
+        this.lectureName = lectureName;
+        this.phoneNum = phoneNum;
+        this.gender = gender;
+        this.address = address;
+        this.img = img;
+        this.email = email;
+    }
+
+    public Lecture(String lectureName, String phoneNum, byte gender, String address, byte[] img, String email, int Majorid) {
+        super(Majorid);
+        this.lectureName = lectureName;
+        this.phoneNum = phoneNum;
+        this.gender = gender;
+        this.address = address;
+        this.img = img;
+        this.email = email;
+    }
     
-    public Lecture() {
+    public int getLectureId() {
+        return lectureId;
     }
 
-    public int getLectureid() {
-        return lectureid;
-    }
-
-    public void setLectureid(int lectureid) {
-        this.lectureid = lectureid;
+    public void setLectureId(int lectureId) {
+        this.lectureId = lectureId;
     }
 
     public String getLectureName() {
@@ -80,22 +63,6 @@ public class Lecture {
 
     public void setLectureName(String lectureName) {
         this.lectureName = lectureName;
-    }
-
-    public int getIdMajor() {
-        return idMajor;
-    }
-
-    public void setIdMajor(int idMajor) {
-        this.idMajor = idMajor;
-    }
-
-    public String getMajorName() {
-        return majorName;
-    }
-
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
     }
 
     public String getPhoneNum() {
@@ -140,8 +107,9 @@ public class Lecture {
 
     @Override
     public String toString() {
-        return "Lecture{" + "lectureid=" + lectureid + ", lectureName=" + lectureName + ", idMajor=" + idMajor + ", majorName=" + majorName + ", phoneNum=" + phoneNum + ", gender=" + gender + ", address=" + address + ", img=" + img + ", email=" + email + '}';
+        return "Lecture{" + "lectureId=" + lectureId + ", lectureName=" + lectureName + ", phoneNum=" + phoneNum + ", gender=" + gender + ", address=" + address + ", img=" + img + ", email=" + email + '}';
     }
     
+       
     
 }

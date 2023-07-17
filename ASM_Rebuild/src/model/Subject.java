@@ -8,36 +8,23 @@ package model;
  *
  * @author buidu
  */
-public class Subject {
+public class Subject extends MajorDetails{
     private int subjectId;
     private String subjectCode;
     private String subjectName;
-    private int majorIdl;
-    private String majorName;
-    private int idMajorDetails;
-    private String majorDetailsName;
 
-    public Subject(int subjectId, String subjectCode, String subjectName, int majorIdl, String majorName, int idMajorDetails, String majorDetailsName) {
+    public Subject(int subjectId, String subjectCode, String subjectName, int majorDetaisId, String majorDetailsName, int Majorid, String majornName) {
+        super(majorDetaisId, majorDetailsName, Majorid, majornName);
         this.subjectId = subjectId;
         this.subjectCode = subjectCode;
         this.subjectName = subjectName;
-        this.majorIdl = majorIdl;
-        this.majorName = majorName;
-        this.idMajorDetails = idMajorDetails;
-        this.majorDetailsName = majorDetailsName;
     }
 
-    public Subject() {
-    }
-
-    public Subject(String subjectCode, String subjectName, int majorIdl, int idMajorDetails) {
-        this.subjectCode = subjectCode;
+    public Subject(String subjectName, int majorDetaisId, int Majorid) {
+        super(majorDetaisId, Majorid);
         this.subjectName = subjectName;
-        this.majorIdl = majorIdl;
-        this.idMajorDetails = idMajorDetails;
     }
     
-     
     public int getSubjectId() {
         return subjectId;
     }
@@ -62,42 +49,8 @@ public class Subject {
         this.subjectName = subjectName;
     }
 
-    public int getMajorIdl() {
-        return majorIdl;
-    }
-
-    public void setMajorIdl(int majorIdl) {
-        this.majorIdl = majorIdl;
-    }
-
-    public String getMajorName() {
-        return majorName;
-    }
-
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
-    }
-
-    public int getIdMajorDetails() {
-        return idMajorDetails;
-    }
-
-    public void setIdMajorDetails(int idMajorDetails) {
-        this.idMajorDetails = idMajorDetails;
-    }
-
-    public String getMajorDetailsName() {
-        return majorDetailsName;
-    }
-
-    public void setMajorDetailsName(String majorDetailsName) {
-        this.majorDetailsName = majorDetailsName;
-    }
-
     @Override
     public String toString() {
-        return "Subject{" + "subjectId=" + subjectId + ", subjectCode=" + subjectCode + ", subjectName=" + subjectName + ", majorIdl=" + majorIdl + ", majorName=" + majorName + ", idMajorDetails=" + idMajorDetails + ", majorDetailsName=" + majorDetailsName + '}';
-    }
-
-
+        return "Subject{" + "subjectId=" + subjectId + ", subjectCode=" + subjectCode + ", subjectName=" + subjectName + '}';
+    }   
 }

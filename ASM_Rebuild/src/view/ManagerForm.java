@@ -201,7 +201,7 @@ public class ManagerForm extends javax.swing.JFrame {
         Image scaledImage = resized.getScaledInstance(lblImage.getWidth(), lblImage.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon resizedImageIcon = new ImageIcon(scaledImage);
         lblLecture.setIcon(resizedImageIcon);
-        cboLectureMajor.setSelectedItem(lsv.getAllLectureData().get(index).getMajorName());
+        cboLectureMajor.setSelectedItem(lsv.getAllLectureData().get(index).getMajornName());
         cboMajorDetails.setSelectedItem(stus.getAlLStudentDetail().get(index).getMajorDetailsName());
     }
 
@@ -210,6 +210,7 @@ public class ManagerForm extends javax.swing.JFrame {
             cboMajor.addItem(x.getMajornName());
             cboLectureMajor.addItem(x.getMajornName());
             cboMajorForDetails.addItem(x.getMajornName());
+            cboMajorForSubject.addItem(x.getMajornName());
         }
         getMajorDetails();
         fillStudentToTable();
@@ -224,12 +225,10 @@ public class ManagerForm extends javax.swing.JFrame {
     }
 
     public void insertLecture() {
-        byte male = 1, female = 0;
         if (rdoLectureMale.isSelected()) {
-            lsv.insertStudent(new Lecture(txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid(), txtLecturePhoneNum1.getText(), male, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
-
+            lsv.insertStudent(new Lecture(txtLectureName.getText(),txtLecturePhoneNum1.getText(),male,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(),msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
         } else {
-            lsv.insertStudent(new Lecture(txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid(), txtLecturePhoneNum1.getText(), female, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
+            lsv.insertStudent(new Lecture(txtLectureName.getText(),txtLecturePhoneNum1.getText(),male,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(),msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
         }
     }
 
@@ -251,10 +250,10 @@ public class ManagerForm extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tblSubject.getModel();
         model.setRowCount(0);
         for (Subject x : ssv.getrAllSubjectsData()) {
-            if (x.getIdMajorDetails() == 0) {
-                model.addRow(new Object[]{x.getMajorIdl(), x.getSubjectCode(), x.getSubjectName(), "Môn cở sở", "Môn cơ sở", x.getMajorIdl(), x.getMajorName()});
+            if (x.getMajorDetaisId() == 0) {
+                model.addRow(new Object[]{x.getMajorid(), x.getSubjectCode(), x.getSubjectName(), "Môn cở sở", "Môn cơ sở", x.getMajorid(), x.getMajornName()});
             } else {
-                model.addRow(new Object[]{x.getMajorIdl(), x.getSubjectCode(), x.getSubjectName(), x.getIdMajorDetails(), x.getMajorDetailsName(), x.getMajorIdl(), x.getMajorName()});
+                model.addRow(new Object[]{x.getMajorid(), x.getSubjectCode(), x.getSubjectName(), x.getMajorDetaisId(), x.getMajorDetailsName(), x.getMajorid(), x.getMajornName()});
             }
         }
     }
@@ -301,10 +300,9 @@ public class ManagerForm extends javax.swing.JFrame {
 
     public void updateLecture(int id) {
         if (rdoLectureMale.isSelected()) {
-            lsv.updateLecture(new Lecture(id, txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid(), txtLecturePhoneNum1.getText(), this.male, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
-
+          lsv.updateLecture(new Lecture(id, txtLectureName.getText(),txtLecturePhoneNum1.getText(), male,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
         } else {
-            lsv.updateLecture(new Lecture(id, txtLectureName.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid(), txtLecturePhoneNum1.getText(), this.female, txtLectureAddress.getText(), imageData, txtLectureEmail.getText()));
+          lsv.updateLecture(new Lecture(id, txtLectureName.getText(),txtLecturePhoneNum1.getText(), female,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
         }
         imageData = new byte[]{};
     }
@@ -314,10 +312,10 @@ public class ManagerForm extends javax.swing.JFrame {
         model.setRowCount(0);
         for (Lecture x : lsv.getAllLectureData()) {
             if (x.getGender() == 1) {
-                model.addRow(new Object[]{x.getLectureid(), x.getLectureName(), "Nam", x.getEmail(), x.getPhoneNum(), x.getMajorName(), x.getAddress()});
+                model.addRow(new Object[]{x.getLectureId(), x.getLectureName(), "Nam", x.getEmail(), x.getPhoneNum(), x.getMajornName(), x.getAddress()});
 
             } else {
-                model.addRow(new Object[]{x.getLectureid(), x.getLectureName(), "Nữ", x.getEmail(), x.getPhoneNum(), x.getMajorName(), x.getAddress()});
+                model.addRow(new Object[]{x.getLectureId(), x.getLectureName(), "Nữ", x.getEmail(), x.getPhoneNum(), x.getMajornName(), x.getAddress()});
             }
 
         }
@@ -339,7 +337,7 @@ public class ManagerForm extends javax.swing.JFrame {
         } else {
             majorDetailsId = mdsv.getMajorDetails(msv.getAllMajor().get(cboMajorForSubject.getSelectedIndex()).getMajorid()).get(cboMajorDetailsForSubject.getSelectedIndex()).getMajorid();
         }
-        Subject sj = new Subject(txtSubjectCode.getText(), txtSubjectName.getText(), idMajor, majorDetailsId);
+        Subject sj = new Subject(txtSubjectName.getText(), majorDetailsId, idMajor);
         ssv.insertSubject(sj);
     }
 
@@ -524,13 +522,11 @@ public class ManagerForm extends javax.swing.JFrame {
         jScrollPane6 = new javax.swing.JScrollPane();
         tblSubject = new javax.swing.JTable();
         jPanel30 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
         jLabel31 = new javax.swing.JLabel();
         jLabel32 = new javax.swing.JLabel();
         jLabel33 = new javax.swing.JLabel();
         cboMajorForSubject = new javax.swing.JComboBox<>();
         cboMajorDetailsForSubject = new javax.swing.JComboBox<>();
-        txtSubjectCode = new javax.swing.JTextField();
         txtSubjectName = new javax.swing.JTextField();
         jPanel31 = new javax.swing.JPanel();
         jPanel29 = new javax.swing.JPanel();
@@ -2010,8 +2006,6 @@ public class ManagerForm extends javax.swing.JFrame {
 
         jPanel30.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel5.setText("Mã Môn Học");
-
         jLabel31.setText("Tên Môn Học");
 
         jLabel32.setText("Chuyên Ngành");
@@ -2036,15 +2030,9 @@ public class ManagerForm extends javax.swing.JFrame {
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel30Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel30Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel30Layout.createSequentialGroup()
-                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSubjectName)))
+                .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSubjectName, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(23, Short.MAX_VALUE))
             .addGroup(jPanel30Layout.createSequentialGroup()
                 .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -2061,24 +2049,19 @@ public class ManagerForm extends javax.swing.JFrame {
         jPanel30Layout.setVerticalGroup(
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel30Layout.createSequentialGroup()
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel30Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(txtSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtSubjectName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(txtSubjectName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboMajorForSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboMajorDetailsForSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel31Layout = new javax.swing.GroupLayout(jPanel31);
@@ -2154,12 +2137,12 @@ public class ManagerForm extends javax.swing.JFrame {
                         .addGap(65, 65, 65)
                         .addComponent(jPanel31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel28Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel28Layout.createSequentialGroup()
                         .addGap(73, 73, 73)
-                        .addComponent(jPanel29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(76, 76, 76)
+                        .addComponent(jPanel29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel28Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(72, 72, 72)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(31, Short.MAX_VALUE))
         );
@@ -2391,7 +2374,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_cboMajorDetailsActionPerformed
 
     private void btnUpdate1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdate1ActionPerformed
-        updateLecture(lsv.getAllLectureData().get(tblLecture.getSelectedRow()).getLectureid());
+        updateLecture(lsv.getAllLectureData().get(tblLecture.getSelectedRow()).getLectureId());
         clearForm();
         fillAllLectureToTable();
     }//GEN-LAST:event_btnUpdate1ActionPerformed
@@ -2599,7 +2582,6 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -2673,7 +2655,6 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPhoneNum;
     private javax.swing.JTextField txtStuName;
-    private javax.swing.JTextField txtSubjectCode;
     private javax.swing.JTextField txtSubjectName;
     // End of variables declaration//GEN-END:variables
 }

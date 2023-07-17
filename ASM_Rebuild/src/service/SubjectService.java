@@ -21,7 +21,7 @@ public class SubjectService {
             Statement stm =  conn.createStatement();
             ResultSet rs = stm.executeQuery("SELECT * from   dbo.SubjectData()");
             while (rs.next()) {                
-                listSubjet.add(new Subject(rs.getInt("idMonHoc"),rs.getString("maMon"),rs.getString("tenMon"),rs.getInt("idNganh"),rs.getString("tenNganh"),rs.getInt("idNganhHep"),rs.getString("tenNganhHep")));
+                listSubjet.add(new Subject(rs.getInt("idMonHoc"),rs.getString("maMon"),rs.getString("tenMon"),rs.getInt("idNganhHep"),rs.getString("tenNganhHep"),rs.getInt("idNganh"),rs.getString("tenNganh")));
             }
             conn.close();
             stm.close();
@@ -34,17 +34,16 @@ public class SubjectService {
     public void insertSubject(Subject o){
         try {
             Connection conn =  DataBaseConnection.getConnection();
-            CallableStatement cstm = conn.prepareCall("{CALL p_insertMonHoc (?,?,?,?)}");
-            cstm.setInt(1, o.getMajorIdl());
-            if (o.getIdMajorDetails() ==0) {
+            CallableStatement cstm = conn.prepareCall("{CALL p_insertMonHoc (?,?,?)}");
+            cstm.setInt(1, o.getMajorid());
+            if (o.getMajorDetaisId() == 0) {
                 cstm.setObject(2, null);
             }
             else{
-                cstm.setInt(2, o.getIdMajorDetails());
+                cstm.setInt(2, o.getMajorDetaisId());
 
             }
             cstm.setString(3, o.getSubjectName());
-            cstm.setString(4,o.getSubjectCode());
             cstm.execute();
             conn.close();
             cstm.close();
