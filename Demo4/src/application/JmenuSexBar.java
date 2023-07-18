@@ -4,6 +4,8 @@
  */
 package application;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author buidu
@@ -26,7 +28,55 @@ public class JmenuSexBar extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        mnuLmao = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jMenu1.setText("File");
+        jMenu1.add(jSeparator2);
+
+        mnuLmao.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_7, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        mnuLmao.setText("New");
+        mnuLmao.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mnuLmaoMouseClicked(evt);
+            }
+        });
+        mnuLmao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuLmaoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuLmao);
+        jMenu1.add(jSeparator3);
+
+        jMenu4.setText("Open");
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_8, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem1.setText("Ngu");
+        jMenu4.add(jMenuItem1);
+
+        jMenu1.add(jMenu4);
+        jMenu1.add(jSeparator1);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        jMenu3.setText("Sex");
+        jMenuBar1.add(jMenu3);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -36,11 +86,19 @@ public class JmenuSexBar extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 277, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void mnuLmaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuLmaoMouseClicked
+       
+    }//GEN-LAST:event_mnuLmaoMouseClicked
+
+    private void mnuLmaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLmaoActionPerformed
+         JOptionPane.showMessageDialog(this,"Ngu ");
+    }//GEN-LAST:event_mnuLmaoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +136,15 @@ public class JmenuSexBar extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JMenuItem mnuLmao;
     // End of variables declaration//GEN-END:variables
 }
