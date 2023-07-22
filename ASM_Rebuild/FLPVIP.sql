@@ -77,9 +77,18 @@ Create table Users(
 Go
 Create table lopHoc(
 	idLop INT IDENTITY(1,1) PRIMARY KEY,
-	idMonHoc INT CONSTRAINT FK_IDMonChoLop FOREIGN KEY(idMonHoc) REFERENCES Mon_Hoc(idMonHoc), 
-	maMonHoc varchar(10)
+	maLop varchar(15),
+	idNganh  int CONSTRAINT FK_maNganhChoLop FOREIGN KEY (idNganh) REFERENCES Chuyen_Nganh(idNganh) NOT NULL,
+	idNganhHep int CONSTRAINT FK_IDNganhHepChoLop FOREIGN KEY(idNganhHep)REFERENCES Nganh_Hep(idNganhHep),
+	idPhong int constraint fk_idPhongHoc FOREIGN KEY (idPhong) REFERENCES phongHoc(idPhong),
 );
+GO
+
+GO
+SELECT * FROM lopHoc
+SELECT * FROM Phan_Cong
+SELECT * FROM ThamGiaHoc
+SELECT * FROM phongHoc
 create table Ky_hoc(
 	idKy INT IDENTITY(1,1) PRIMARY KEY,
 	maKy varchar(5) NOT NULL,
@@ -89,13 +98,12 @@ GO
 create table Phan_Cong(
 	idPhanCong INT IDENTITY(1,1) PRIMARY KEY,
 	idLop INT CONSTRAINT FK_IDLopPhanCong FOREIGN KEY(idLop) REFERENCES lopHoc(idLop), 
-	idGiangVien INT CONSTRAINT FK_IDGiangVienPhanCong FOREIGN KEY(idGiangVien) REFERENCES Giang_Vien(idGiangVien), 
-	idPhong INT CONSTRAINT FK_IDidPhongPhanCong FOREIGN KEY(idPhong) REFERENCES phongHoc(idPhong),
-	idKy INT CONSTRAINT FK_IdKyHoPhanCongc FOREIGN KEY(idKy) REFERENCES Ky_hoc(idKy)
-);
+	idMonHoc INT CONSTRAINT FK_IDMonChoLop FOREIGN KEY(idMonHoc) REFERENCES Mon_Hoc(idMonHoc), 
+	idGiangVien INT CONSTRAINT FK_IDGiangVienPhanCong FOREIGN KEY(idGiangVien) REFERENCES Giang_Vien(idGiangVien)
+	);
 create table ThamGiaHoc(
 	idThamGia INT IDENTITY(1,1) PRIMARY KEY,
-	idPhanCong INT CONSTRAINT FK_IDSinhVienThamGia FOREIGN KEY(idPhanCong) REFERENCES Phan_Cong(idPhanCong),
+	idLop INT CONSTRAINT FK_IDSinhVienTrongLop  FOREIGN KEY(idLop) REFERENCES lopHoc(idLop),
 	idSinhVien INT CONSTRAINT FK_IDSinhVienPhanCong FOREIGN KEY(idSinhVien) REFERENCES  Sinh_Vien(idSinhVien)
 );
 GO
@@ -177,26 +185,45 @@ BEGIN
 END
 GO
 create or alter procedure p_insertClass
-	@idMonHoc INT
+	@idNganh int,@idNganhHep int,@idPhong int
 AS
 BEGIN
-	INSERT INTO lopHoc(idMonHoc)
-	VALUES(@idMonHoc);
+	INSERT INTO lopHoc(idNganh,idNganhHep,idPhong)
+	VALUES(@idNganh,@idNganhHep,@idPhong);
 END
+SELECT * FROM lopHoc
+SELECT * FROM Chuyen_Nganh
+SELECT * FROM Nganh_Hep
+EXEC p_insertClass 1,1,1 
 GO
-CREATE OR ALTER trigger tg_genSubjectCode ON lopHoc
+EXEC p_insertClass 
+SELECT *  FROM lopHoc
+SELECT * FROM Mon_Hoc
+EXEC p_insertClass 51,3
+GO
+CREATE OR ALTER trigger tg_genClassCode ON lopHoc
 for insert
 AS
 BEGIN
-	DECLARE @subjectCode varchar(10),@idClass int,@classCode varchar(10),@idSubject int
-	SELECT @idClass = idLop FROM inserted
-	SELECT @idSubject = idMonHoc FROM inserted
-	SELECT @subjectCode = maMon FROM Mon_Hoc WHERE idMonHoc = @idSubject
-	SET @classCode = @subjectCode+'.'+CAST(@idClass AS varchar(5))
-	UPDATE lopHoc SET maLop = @classCode WHERE idLop = @idClass
+	DECLARE @majorId int,@MajorDetailsId int,@MajorDetailsCode varchar(5),@idClass int
+	SELECT @idClass=idLop FROM inserted
+	SELECT @majorId =idNganh FROM inserted
+	SELECT @MajorDetailsId =  idNganhHep FROM  inserted
+	SELECT @MajorDetailsCode = maNganhHep FROM Nganh_Hep WHERE idNganhHep = @MajorDetailsId
+	UPDATE lopHoc set maLop = @MajorDetailsCode + CONVERT(varchar,@majorId)+CONVERT(varchar,@MajorDetailsId)+CONVERT(varchar,@idClass)
+	WHERE idLop = @idClass
 END
 GO
-EXEC p_insertClass 34; 
+
+EXEC p_insertClass 51,1
+EXEC p_insertClass 33,1
+EXEC p_insertClass 38,2
+
+DELETE FROM lopHoc
+SELECT * FROM lopHoc
+SELECT * FROM Mon_Hoc
+SELECT * FROM Nganh_Hep
+EXEC p_insertClass 55,4
 GO
 SELECT  * FROM Mon_Hoc
 SELECT * FROM lopHoc
@@ -204,13 +231,14 @@ ALTER TABLE lopHoc
 	ADD maLop varchar(10)
 GO
 create or alter procedure p_insertPhanCong
- @idLop INT,@idGiangVien INT,@idPhong INT,@idKy INT
+ @idLop INT,@idMon int
  AS
  BEGIN
-	insert into Phan_Cong(idLop,idGiangVien,idPhong,idKy)
-		values(@idLop,@idGiangVien,@idPhong,@idKy)
+	insert into Phan_Cong(idLop,idMonHoc)
+		values(@idLop,@idMon)
  END
 GO
+SELECT * FROM Phan_Cong
 create or alter procedure p_insertClassJoining
 	@idPhanCong INT,@idSinhVien INT
 AS
@@ -385,18 +413,62 @@ Select * from users
 GO
 GO
 	SELECT * FROM Mon_Hoc
+	Select * from Phan_Cong
+GO
+create or alter procedure p_insertPhanCong
+@idLop INT, @idGiangVien INT,@idPhong INT ,@idKy INT 
+AS
+BEGIN
+	Insert into Phan_Cong(idLop,idGiangVien,idPhong,idKy)
+	Values(@idLop,@idGiangVien,@idPhong,@idKy);
+END
+GO
+SElect * from Phan_Cong
+SELECT * FROm lopHoc
+SELECT * FROM phongHoc
+SELECT * FROM Ky_hoc
+EXEC p_insertPhanCong 15,1,14,2;
+SELECT * FROM Phan_Cong
+GO
+
+CREATE OR ALTER FUNCTION dbo.LocDanhSachLopDaTonTai()
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT lopHoc.*
+FROM lopHoc
+LEFT JOIN Phan_Cong ON lopHoc.idLop = Phan_Cong.idLop
+WHERE Phan_Cong.idLop IS NULL
+);
+GO
+CREATE OR ALTER FUNCTION dbo.GetClassData()
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT lopHoc.idLop,lopHoc.maLop,lopHoc.idNganh,lopHoc.idNganhHep,lopHoc.idPhong,CONCAT(toaNha.maToa,phongHoc.soPhong)AS 'tenPhong',
+			Nganh_Hep.tenNganhHep,Chuyen_Nganh.tenNganh
+		FROM lopHoc JOIN Nganh_Hep ON lopHoc.idNganhHep = Nganh_Hep.idNganhHep 
+					JOIN Chuyen_Nganh ON Nganh_Hep.idNganh = Chuyen_Nganh.idNganh 
+					JOIN phongHoc ON lopHoc.idPhong = phongHoc.idPhong JOIn toaNha ON  phongHoc.idToa = toaNha.idToa
+);
+SELECT * FROM toaNha
+SELECT * FROM lopHoc
 GO
 create or alter trigger tg_autoInsertSubjectCode ON  Mon_Hoc
 for insert
 AS
 BEGIN
-	DECLARE @subJectId int,@maJorId int,@majorDetailsId int,@MajorDetailsCode varchar(5),@maMon nvarchar(20)
+	DECLARE @subJectId int,@maJorId int,@majorDetailsId int,@MajorDetailsCode varchar(5),@maMon nvarchar(20),
+	@idMajorDtails int
 	SELECT @subJectId = idMonHoc,@maJorId=idNganh,@majorDetailsId=idNganhHep FROM inserted
+	SELECT @idMajorDtails = idNganhHep FROM Mon_Hoc WHERE idMonHoc = @subJectId
 	SELECT @MajorDetailsCode=maNganhHep FROM Nganh_Hep WHERE idNganhHep = @majorDetailsId
 	print 'alo '+Cast(@majorDetailsId AS varchar);
 	IF(@majorDetailsId is not null)
 	BEGIN
-		SET @maMon =@MajorDetailsCode+CAST(@maJorId AS varchar(5))+CAST(@majorDetailsId AS varchar(5))+CAST(@subJectId AS varchar(5))
+		SET @maMon =@MajorDetailsCode+CAST(@maJorId AS varchar(5))+CAST(@majorDetailsId -AS varchar(5))+CAST(@subJectId AS varchar(5))
 				UPDATE Mon_Hoc SET maMon = @maMon
 			WHERE idMonHoc = @subJectId
 		
@@ -410,6 +482,7 @@ BEGIN
 END
 Go
 EXEC p_insertMonHoc  1,NULL,'Font-End';
+
 DELETE FROM Mon_Hoc WHERE idNganhHep is null
 SELECT * FROM Mon_Hoc 
 SELECT * FROM Chuyen_Nganh
@@ -582,4 +655,20 @@ RETURN
 (
 	SELECT maLop,Mon_Hoc.tenMon FROM lopHoc JOIN Mon_Hoc ON lopHoc.idMonHoc = Mon_Hoc.idMonHoc
 );
-SELECT * FROM GetClassData()
+SELECT RomDetails.idPhong,RomDetails.tenPhong,RomDetails.idToa,RomDetails.maToa,RomDetails.soPhong,RomDetails.maToa
+		FROM  dbo.RomDetails() LEFT JOIN lopHoc ON lopHoc.idPhong = RomDetails.idPhong 
+		where lopHoc.idLop is null ANd RomDetails.idToa = 1
+	WHERE idToa = 1
+SELECT  * FROM dbo.GetClassData()	
+SELECT * FROM lopHoc
+SELECT * FROM Mon_Hoc
+SELECT * FROM Phan_Cong
+DELETE FROM Phan_Cong
+EXEC p_insertPhanCong 3,56	
+GO
+SELECT mh.idMonHoc,mh.maMon,mh.tenMon
+FROM lopHoc lh
+CROSS JOIN Mon_Hoc mh
+LEFT JOIN Phan_Cong pc ON pc.idLop = lh.idLop AND pc.idMonHoc = mh.idMonHoc
+WHERE lh.idLop = 3 AND mh.idNganh = 1
+AND pc.idPhanCong IS NULL;

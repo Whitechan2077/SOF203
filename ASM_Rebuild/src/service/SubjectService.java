@@ -52,4 +52,29 @@ public class SubjectService {
         }
         System.out.println(o.toString());
     }
+public LinkedList<Subject> getrAllSubjectsDataByMajorId(int majorId,int classId){
+        LinkedList<Subject> listSubjet = new LinkedList<>();
+        try {
+            Connection conn =  DataBaseConnection.getConnection();
+            CallableStatement cstm = conn.prepareCall("""
+            SELECT mh.idMonHoc,mh.maMon,mh.tenMon
+                    FROM lopHoc lh
+                        CROSS JOIN Mon_Hoc mh
+                        LEFT JOIN Phan_Cong pc ON pc.idLop = lh.idLop AND pc.idMonHoc = mh.idMonHoc
+                    WHERE lh.idLop = ? AND mh.idNganh = ? AND pc.idPhanCong IS NULL;                                          
+                                                      """);
+            cstm.setInt(1, classId);
+            cstm.setInt(2, majorId);
+            ResultSet rs = cstm.executeQuery();
+            while (rs.next()) {                
+                listSubjet.add(new Subject(rs.getInt("idMonHoc"),rs.getString("maMon"),rs.getString("tenMon")));
+            }
+            conn.close();
+            cstm.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return  listSubjet;
+    }
 }

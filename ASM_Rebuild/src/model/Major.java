@@ -58,9 +58,10 @@ public class Major {
     public void setMajorCode(String majorCode) {
         this.majorCode = majorCode;
     }
+
     @Override
     public String toString() {
-        return "Major{" + "Majorid=" + Majorid + ", majornName=" + majornName + ", majorCode=" + majorCode + '}';
+        return  majornName;
     }
-  
+    
 }

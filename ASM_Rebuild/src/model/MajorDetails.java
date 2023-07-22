@@ -19,7 +19,11 @@ public class MajorDetails extends Major{
         this.majorDetailsCode = majorDetailsCode;
         this.majorDetailsName = majorDetailsName;
     }
-
+    
+    public MajorDetails(int majorDetaisId) {
+        this.majorDetaisId = majorDetaisId;
+    }
+    
     public MajorDetails(String majorDetailsCode, String majorDetailsName, int Majorid) {
         super(Majorid);
         this.majorDetailsCode = majorDetailsCode;
@@ -63,5 +67,10 @@ public class MajorDetails extends Major{
 
     public void setMajorDetailsName(String majorDetailsName) {
         this.majorDetailsName = majorDetailsName;
+    } 
+
+    @Override
+    public String toString() {
+        return majorDetailsName;
     } 
 }

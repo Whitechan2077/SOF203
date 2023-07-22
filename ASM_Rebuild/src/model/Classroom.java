@@ -8,17 +8,17 @@ package model;
  *
  * @author buidu
  */
-public class Classroom extends Building{
+public class ClassRoom extends Building{
     private int roomId;
     private int rommcode;
 
-    public Classroom(int roomId, int rommcode, int idBuiding, String builingCode) {
+    public ClassRoom(int roomId, int rommcode, int idBuiding, String builingCode) {
         super(idBuiding, builingCode);
         this.roomId = roomId;
         this.rommcode = rommcode;
     }
-
-    public Classroom(int rommcode, int idBuiding) {
+    
+    public ClassRoom(int rommcode, int idBuiding) {
         super(idBuiding);
         this.rommcode = rommcode;
     }    
@@ -40,7 +40,7 @@ public class Classroom extends Building{
 
     @Override
     public String toString() {
-        return "Classroom{" + "roomId=" + roomId + ", rommcode=" + rommcode + '}'+"Ten toa"+super.getBuilingCode()+"ID toa"+super.getIdBuiding();
+        return super.getBuilingCode()+rommcode;
     }
     
 }

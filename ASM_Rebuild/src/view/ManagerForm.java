@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -26,11 +28,14 @@ import model.Student;
 import model.Lecture;
 import service.LectureService;
 import service.BuildingService;
-import model.Classroom;
+import model.ClassRoom;
 import model.Building;
 import service.SubjectService;
 import model.Subject;
-
+import service.ClassService;
+import model.Class;
+import model.ClassRoom;
+import service.ClassRoomService;
 /**
  *
  * @author buidu
@@ -46,6 +51,9 @@ public class ManagerForm extends javax.swing.JFrame {
     private byte male = 1, female = 0;
     private BuildingService bsv = new BuildingService();
     private SubjectService ssv = new SubjectService();
+    private ClassService csv = new ClassService();
+    private ClassRoomService crsv = new ClassRoomService();
+    private DefaultListModel modelJListClass = new DefaultListModel();
 
     /**
      * Creates new form ManagerForm
@@ -60,6 +68,8 @@ public class ManagerForm extends javax.swing.JFrame {
         pnMajorDetails.setVisible(false);
         pnRoom.setVisible(false);
         pnSubject.setVisible(false);
+                pnClassJoining.setVisible(false);
+
     }
 
     public void openFile() {
@@ -147,7 +157,7 @@ public class ManagerForm extends javax.swing.JFrame {
     public void fillRoomsToTable() {
         DefaultTableModel model = (DefaultTableModel) tblBuilding.getModel();
         model.setRowCount(0);
-        for (Classroom x : bsv.getAllBuidingDetails()) {
+        for (ClassRoom x : bsv.getAllBuidingDetails()) {
             if (x.getRommcode() == 0) {
                 model.addRow(new Object[]{x.getBuilingCode(), "Chưa có phòng"});
             } else {
@@ -214,8 +224,10 @@ public class ManagerForm extends javax.swing.JFrame {
         }
         getMajorDetails();
         fillStudentToTable();
+        getAllMajorForClass();
+        getAllBuildingForClass();
+        getAllMajorForSubjectAssigmemnt();
     }
-
     public void insertStudent(int majorId, int majorDetailsId) {
         if (rdoMale.isSelected()) {
             stus.insertStudent(new Student(txtStuName.getText(),this.male,txtEmail.getText(),txtAddress.getText(),txtPhoneNum.getText(), imageData, majorDetailsId, majorId));
@@ -223,7 +235,13 @@ public class ManagerForm extends javax.swing.JFrame {
             stus.insertStudent(new Student(txtStuName.getText(),this.female,txtEmail.getText(),txtAddress.getText(),txtPhoneNum.getText(), imageData, majorDetailsId, majorId));
         }
     }
-
+    public  void  fillToTaleClass(){
+        DefaultTableModel model = (DefaultTableModel) tblClass.getModel();
+        model.setRowCount(0);
+        for (Class x : csv.getAllClassData()) {
+            model.addRow(new Object[]{x.getColeClass(),x.getMajornName(),x.getMajorDetailsName(),x.getRoomName()});
+        }
+    }
     public void insertLecture() {
         if (rdoLectureMale.isSelected()) {
             lsv.insertStudent(new Lecture(txtLectureName.getText(),txtLecturePhoneNum1.getText(),male,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(),msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
@@ -231,7 +249,12 @@ public class ManagerForm extends javax.swing.JFrame {
             lsv.insertStudent(new Lecture(txtLectureName.getText(),txtLecturePhoneNum1.getText(),male,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(),msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
         }
     }
-
+    public void insertClass(){
+        Major major = (Major) cboMajorForClass.getSelectedItem();
+        MajorDetails majorDetails = (MajorDetails) cboMajorDetilsForClass.getSelectedItem();
+        ClassRoom classRoom = (ClassRoom) CboRoomsForClass.getSelectedItem();
+        csv.insertClass(new Class(classRoom.getRoomId(),majorDetails.getMajorDetaisId(),major.getMajorid()));
+    }
     public void insertRoom() {
         Building b = new Building();
         b.setBuilingCode(txtBuildingCode.getText());
@@ -245,7 +268,57 @@ public class ManagerForm extends javax.swing.JFrame {
             model.addRow(new Object[]{x.getMajorid(), x.getMajorCode(), x.getMajornName()});
         }
     }
-
+    
+    public void getAllMajorForClass(){
+        DefaultComboBoxModel model = (DefaultComboBoxModel) cboMajorForClass.getModel();
+        model.removeAllElements();
+        for (Major x : msv.getAllMajor()) {
+            model.addElement(x);
+        }
+    }
+    
+    public void getAllMajorDetailForClassByMajorId(int id){
+        DefaultComboBoxModel model = (DefaultComboBoxModel) cboMajorDetilsForClass.getModel();
+        model.removeAllElements();
+        for (MajorDetails x : mdsv.getMajorDetails(id)) {
+            model.addElement(x);
+        }
+    }
+    public void getAllBuildingForClass(){
+        DefaultComboBoxModel model = (DefaultComboBoxModel) cboBuildingForClass.getModel();
+        model.removeAllElements();
+        for (Building x : bsv.getBuildingIformations()) {
+            model.addElement(x);
+        }
+    }
+    public void getAllRoomsDataForClass(int id){
+        DefaultComboBoxModel model = (DefaultComboBoxModel) CboRoomsForClass.getModel();
+        model.removeAllElements();
+        for (ClassRoom x :crsv.getRooms(id) ) {
+            model.addElement(x);
+        }
+    }
+    public void getAllMajorForSubjectAssigmemnt(){
+        DefaultComboBoxModel model = (DefaultComboBoxModel)CbMajorForClassAssignment.getModel();
+        model.removeAllElements();
+        for (Major x : msv.getAllMajor()) {
+            model.addElement(x);
+        }
+    }
+    public void getAllMajorDetailForSubjectAssignmentByMajorId(int id){
+        DefaultComboBoxModel model = (DefaultComboBoxModel) cboMajorDetailsForSubjectAssignment.getModel();
+        model.removeAllElements();
+        for (MajorDetails x : mdsv.getMajorDetails(id)) {
+            model.addElement(x);
+        }
+    }
+    public void getAllSubjectDataForSubjectAssigment(int idMajor,int idClass){
+        DefaultListModel model = new DefaultListModel();
+        jListSubject.setModel(model);
+        for (Subject x : ssv.getrAllSubjectsDataByMajorId(idMajor,idClass)) {
+            model.addElement(x);
+        }
+    }
     public void fillAllSubjectsDataToTable() {
         DefaultTableModel model = (DefaultTableModel) tblSubject.getModel();
         model.setRowCount(0);
@@ -257,7 +330,13 @@ public class ManagerForm extends javax.swing.JFrame {
             }
         }
     }
-
+    public void getAllClassToJlist(int majorDetailsId){
+        DefaultListModel model = new DefaultListModel();
+        jListClass.setModel(model);
+        for (Class x : csv.getAllClassDataByMajorDetailsId(majorDetailsId)) {
+            model.addElement(x);
+        }
+    }
     public void getMajorDetails(){
         cboMajorDetails.removeAllItems();
         for (MajorDetails x : mdsv.getMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid())) {
@@ -272,7 +351,7 @@ public class ManagerForm extends javax.swing.JFrame {
         }
         cboMajorDetailsForSubject.addItem("Môn cơ sở");
     }
-
+    
     public void addMajorDetails(int index) {
         mdsv.insertMajorDetails(new MajorDetails(txtMajorDetailsCode.getText(),TxtMajorDetailsName.getText(),msv.getAllMajor().get(index).getMajorid()));
     }
@@ -320,22 +399,16 @@ public class ManagerForm extends javax.swing.JFrame {
 
         }
     }
-    public void getAllSubject(){
-        CboSubject.removeAllItems();
-        for(Subject x :ssv.getrAllSubjectsData()){
-            CboSubject.addItem(x.getSubjectCode());
-        }
-    }
     public void insertClassRoom() {
         int id = bsv.getBuildingIformations().get(cboBuilding.getSelectedIndex()).getIdBuiding();
         System.out.println(id);
-        Classroom clrs = new Classroom(Integer.parseInt(jTextField4.getText()), id);
+        ClassRoom clrs = new ClassRoom(Integer.parseInt(jTextField4.getText()), id);
         bsv.insertClassRoom(clrs);
         System.out.println(clrs);
     }
 
     public void insertSubject() {
-        int idMajor = msv.getAllMajor().get(cboMajorForDetails.getSelectedIndex()).getMajorid();
+        int idMajor = msv.getAllMajor().get(cboMajorForSubject.getSelectedIndex()).getMajorid();
         int majorDetailsId;
         if (String.valueOf(cboMajorDetailsForSubject.getSelectedItem()).equalsIgnoreCase("môn cơ sở")) {
             majorDetailsId = 0;
@@ -552,11 +625,38 @@ public class ManagerForm extends javax.swing.JFrame {
         jToggleButton3 = new javax.swing.JToggleButton();
         jPanel38 = new javax.swing.JPanel();
         jLabel34 = new javax.swing.JLabel();
-        CboSubject = new javax.swing.JComboBox<>();
+        jLabel35 = new javax.swing.JLabel();
+        cboMajorDetilsForClass = new javax.swing.JComboBox<>();
+        cboMajorForClass = new javax.swing.JComboBox<>();
+        jLabel36 = new javax.swing.JLabel();
+        jLabel37 = new javax.swing.JLabel();
+        CboRoomsForClass = new javax.swing.JComboBox<>();
+        cboBuildingForClass = new javax.swing.JComboBox<>();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblClass = new javax.swing.JTable();
         jPanel33 = new javax.swing.JPanel();
+        jPanel39 = new javax.swing.JPanel();
+        jLabel39 = new javax.swing.JLabel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        jListSubject = new javax.swing.JList<>();
+        jLabel40 = new javax.swing.JLabel();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        jListClass = new javax.swing.JList<>();
+        jLabel41 = new javax.swing.JLabel();
+        jPanel40 = new javax.swing.JPanel();
+        jButton35 = new javax.swing.JButton();
+        jButton36 = new javax.swing.JButton();
+        jButton39 = new javax.swing.JButton();
+        jButton40 = new javax.swing.JButton();
+        jLabel42 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        CbMajorForClassAssignment = new javax.swing.JComboBox<>();
+        cboMajorDetailsForSubjectAssignment = new javax.swing.JComboBox<>();
+        jLabel38 = new javax.swing.JLabel();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jPanel34 = new javax.swing.JPanel();
+        jPanel41 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -672,19 +772,19 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
+                .addGap(14, 14, 14)
                 .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(79, 79, 79))
+                .addGap(25, 25, 25))
         );
 
         container.setLayout(new java.awt.CardLayout());
@@ -1999,7 +2099,7 @@ public class ManagerForm extends javax.swing.JFrame {
         jPanel27.setLayout(jPanel27Layout);
         jPanel27Layout.setHorizontalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 22, Short.MAX_VALUE)
+            .addGap(0, 23, Short.MAX_VALUE)
         );
         jPanel27Layout.setVerticalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2034,6 +2134,7 @@ public class ManagerForm extends javax.swing.JFrame {
 
         jLabel33.setText("Ngành hẹp");
 
+        cboMajorForSubject.setToolTipText("");
         cboMajorForSubject.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboMajorForSubjectActionPerformed(evt);
@@ -2229,11 +2330,29 @@ public class ManagerForm extends javax.swing.JFrame {
 
         jPanel38.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel34.setText("Môn Học :");
+        jLabel34.setText("Chuyên Ngành:");
 
-        CboSubject.addActionListener(new java.awt.event.ActionListener() {
+        jLabel35.setText("Ngành Hẹp:");
+
+        cboMajorForClass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CboSubjectActionPerformed(evt);
+                cboMajorForClassActionPerformed(evt);
+            }
+        });
+
+        jLabel36.setText("Tên Phòng");
+
+        jLabel37.setText("Tòa Nhà");
+
+        CboRoomsForClass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CboRoomsForClassActionPerformed(evt);
+            }
+        });
+
+        cboBuildingForClass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboBuildingForClassActionPerformed(evt);
             }
         });
 
@@ -2243,9 +2362,21 @@ public class ManagerForm extends javax.swing.JFrame {
             jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel38Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
-                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(CboSubject, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel34, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cboMajorForClass, 0, 189, Short.MAX_VALUE)
+                    .addComponent(cboMajorDetilsForClass, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel36, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                    .addComponent(jLabel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(CboRoomsForClass, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboBuildingForClass, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel38Layout.setVerticalGroup(
@@ -2254,8 +2385,16 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CboSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(59, Short.MAX_VALUE))
+                    .addComponent(cboMajorForClass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel37)
+                    .addComponent(cboBuildingForClass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel35)
+                    .addComponent(cboMajorDetilsForClass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel36)
+                    .addComponent(CboRoomsForClass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel36Layout = new javax.swing.GroupLayout(jPanel36);
@@ -2274,20 +2413,28 @@ public class ManagerForm extends javax.swing.JFrame {
             .addGroup(jPanel36Layout.createSequentialGroup()
                 .addGap(68, 68, 68)
                 .addGroup(jPanel36Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel37, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                     .addComponent(jPanel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(86, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblClass.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Mã  lớp", "Tên môn"
+                "Mã  lớp", "Tên Ngành", "Tên Ngành Hẹp", "Phòng"
             }
-        ));
-        jScrollPane7.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane7.setViewportView(tblClass);
 
         javax.swing.GroupLayout jPanel35Layout = new javax.swing.GroupLayout(jPanel35);
         jPanel35.setLayout(jPanel35Layout);
@@ -2335,18 +2482,195 @@ public class ManagerForm extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Tạo lớp mới", jPanel32);
 
+        jPanel39.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel39.setText("Chọn lớp :");
+
+        jListSubject.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { " " };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane8.setViewportView(jListSubject);
+
+        jLabel40.setText("Môn học");
+
+        jListClass.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { " " };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jListClass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jListClassMouseClicked(evt);
+            }
+        });
+        jListClass.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListClassValueChanged(evt);
+            }
+        });
+        jScrollPane9.setViewportView(jListClass);
+
+        jPanel40.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jButton35.setText("Thêm môn");
+
+        jButton36.setText("Sửa các môn");
+
+        jButton39.setText("jButton39");
+
+        jButton40.setText("jButton40");
+
+        javax.swing.GroupLayout jPanel40Layout = new javax.swing.GroupLayout(jPanel40);
+        jPanel40.setLayout(jPanel40Layout);
+        jPanel40Layout.setHorizontalGroup(
+            jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel40Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton39, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton36, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton40, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        jPanel40Layout.setVerticalGroup(
+            jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel40Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton35)
+                    .addComponent(jButton36))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton40)
+                    .addComponent(jButton39, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        jPanel40Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton35, jButton36, jButton39, jButton40});
+
+        jLabel42.setText("Chọn Ngành:");
+
+        jLabel43.setText("Chọn Ngành hẹp:");
+
+        CbMajorForClassAssignment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CbMajorForClassAssignmentActionPerformed(evt);
+            }
+        });
+
+        cboMajorDetailsForSubjectAssignment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboMajorDetailsForSubjectAssignmentActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel39Layout = new javax.swing.GroupLayout(jPanel39);
+        jPanel39.setLayout(jPanel39Layout);
+        jPanel39Layout.setHorizontalGroup(
+            jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel39Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel42, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel43, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cboMajorDetailsForSubjectAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel39Layout.createSequentialGroup()
+                        .addComponent(CbMajorForClassAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel40)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
+                .addComponent(jPanel40, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(79, 79, 79)
+                .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel39Layout.setVerticalGroup(
+            jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel39Layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel40, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel39Layout.createSequentialGroup()
+                        .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel42)
+                            .addComponent(CbMajorForClassAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(27, 27, 27)
+                        .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel43)
+                            .addComponent(cboMajorDetailsForSubjectAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel40)
+                    .addGroup(jPanel39Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel41)))
+                .addContainerGap(63, Short.MAX_VALUE))
+        );
+
+        jLabel38.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel38.setText("Phân Công Môn");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Lớp", "Môn"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane10.setViewportView(jTable1);
+
         javax.swing.GroupLayout jPanel33Layout = new javax.swing.GroupLayout(jPanel33);
         jPanel33.setLayout(jPanel33Layout);
         jPanel33Layout.setHorizontalGroup(
             jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1143, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel33Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel39, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1131, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel33Layout.createSequentialGroup()
+                        .addGap(0, 14, Short.MAX_VALUE)
+                        .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 1117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+            .addGroup(jPanel33Layout.createSequentialGroup()
+                .addGap(435, 435, 435)
+                .addComponent(jLabel38)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel33Layout.setVerticalGroup(
             jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 612, Short.MAX_VALUE)
+            .addGroup(jPanel33Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel38)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel39, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        jTabbedPane2.addTab("Phân công giảng dạy", jPanel33);
+        jTabbedPane2.addTab("Phân môn", jPanel33);
 
         javax.swing.GroupLayout jPanel34Layout = new javax.swing.GroupLayout(jPanel34);
         jPanel34.setLayout(jPanel34Layout);
@@ -2356,10 +2680,23 @@ public class ManagerForm extends javax.swing.JFrame {
         );
         jPanel34Layout.setVerticalGroup(
             jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 612, Short.MAX_VALUE)
+            .addGap(0, 611, Short.MAX_VALUE)
         );
 
         jTabbedPane2.addTab("Chia lớp cho sinh viên", jPanel34);
+
+        javax.swing.GroupLayout jPanel41Layout = new javax.swing.GroupLayout(jPanel41);
+        jPanel41.setLayout(jPanel41Layout);
+        jPanel41Layout.setHorizontalGroup(
+            jPanel41Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1143, Short.MAX_VALUE)
+        );
+        jPanel41Layout.setVerticalGroup(
+            jPanel41Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 611, Short.MAX_VALUE)
+        );
+
+        jTabbedPane2.addTab("tab4", jPanel41);
 
         javax.swing.GroupLayout pnClassJoiningLayout = new javax.swing.GroupLayout(pnClassJoining);
         pnClassJoining.setLayout(pnClassJoiningLayout);
@@ -2425,6 +2762,7 @@ public class ManagerForm extends javax.swing.JFrame {
         pnMajorDetails.setVisible(false);
         pnRoom.setVisible(false);
         pnSubject.setVisible(false);
+        pnClassJoining.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -2495,10 +2833,10 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         pnClassJoining.setVisible(false);
-        pnLecture.setVisible(true);
+        pnLecture.setVisible(false);
         pnSubject.setVisible(false);
         pnMajor.setVisible(false);
-        pnMajorDetails.setVisible(false);
+        pnMajorDetails.setVisible(true);
         pnStudent.setVisible(false);
         pnRoom.setVisible(false);
         pnSubject.setVisible(false);
@@ -2532,7 +2870,6 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        getAllSubject();        
         pnClassJoining.setVisible(true);
         pnSubject.setVisible(false);
         pnMajor.setVisible(false);
@@ -2541,11 +2878,12 @@ public class ManagerForm extends javax.swing.JFrame {
         pnLecture.setVisible(false);
         pnRoom.setVisible(false);
         pnSubject.setVisible(false);
-
+        fillToTaleClass();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         pnSubject.setVisible(false);
+        pnClassJoining.setVisible(false);
         pnLecture.setVisible(false);
         pnSubject.setVisible(true);
         pnMajor.setVisible(false);
@@ -2675,20 +3013,68 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton33ActionPerformed
 
     private void cboMajorForSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorForSubjectActionPerformed
-
+        getMajorDetailsForSubject();
     }//GEN-LAST:event_cboMajorForSubjectActionPerformed
 
     private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jToggleButton2ActionPerformed
 
-    private void CboSubjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CboSubjectActionPerformed
-
-    }//GEN-LAST:event_CboSubjectActionPerformed
-
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
+        insertClass();
+        Major major = (Major) cboMajorForClass.getSelectedItem();
+        System.out.println(major.getMajorid());
+        getAllMajorDetailForClassByMajorId(major.getMajorid());
+        fillToTaleClass();
     }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void cboMajorForClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorForClassActionPerformed
+        Major major = (Major) cboMajorForClass.getSelectedItem();
+        System.out.println(major.getMajorid());
+        getAllMajorDetailForClassByMajorId(major.getMajorid());
+    }//GEN-LAST:event_cboMajorForClassActionPerformed
+
+    private void cboBuildingForClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboBuildingForClassActionPerformed
+        Building building = (Building) cboBuildingForClass.getSelectedItem();
+        getAllRoomsDataForClass(building.getIdBuiding());
+    }//GEN-LAST:event_cboBuildingForClassActionPerformed
+
+    private void CboRoomsForClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CboRoomsForClassActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CboRoomsForClassActionPerformed
+
+    private void CbMajorForClassAssignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbMajorForClassAssignmentActionPerformed
+        try {
+           Major major = (Major)CbMajorForClassAssignment.getSelectedItem();
+           getAllMajorDetailForSubjectAssignmentByMajorId(major.getMajorid());
+        } catch (NullPointerException e) {
+            DefaultListModel model = new DefaultListModel();
+            jListClass.setModel(model);
+            model.addElement("Không có lớp nào");
+        }
+    }//GEN-LAST:event_CbMajorForClassAssignmentActionPerformed
+
+    private void cboMajorDetailsForSubjectAssignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorDetailsForSubjectAssignmentActionPerformed
+        try {
+            MajorDetails majorDetails = (MajorDetails) cboMajorDetailsForSubjectAssignment.getSelectedItem();
+            getAllClassToJlist(majorDetails.getMajorDetaisId());
+        } catch (NullPointerException e) {
+            DefaultListModel model = new DefaultListModel();
+            jListClass.setModel(model);
+            model.addElement("Không có lớp nào");
+        }
+    }//GEN-LAST:event_cboMajorDetailsForSubjectAssignmentActionPerformed
+
+    private void jListClassValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListClassValueChanged
+           
+    }//GEN-LAST:event_jListClassValueChanged
+
+    private void jListClassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListClassMouseClicked
+        DefaultListModel model = (DefaultListModel) jListClass.getModel();
+        Class classForSubject = (Class) model.getElementAt(jListClass.getSelectedIndex());
+        System.out.println(classForSubject.getMajorid());
+        getAllSubjectDataForSubjectAssigment(classForSubject.getMajorid(),classForSubject.getIdClass());
+    }//GEN-LAST:event_jListClassMouseClicked
 
     /**
      * @param args the command line arguments
@@ -2726,7 +3112,8 @@ public class ManagerForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CboSubject;
+    private javax.swing.JComboBox<String> CbMajorForClassAssignment;
+    private javax.swing.JComboBox<String> CboRoomsForClass;
     private javax.swing.JTextField TxtMajorDetailsName;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnAdd1;
@@ -2738,10 +3125,14 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JButton btnUpdate1;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cboBuilding;
+    private javax.swing.JComboBox<String> cboBuildingForClass;
     private javax.swing.JComboBox<String> cboLectureMajor;
     private javax.swing.JComboBox<String> cboMajor;
     private javax.swing.JComboBox<String> cboMajorDetails;
     private javax.swing.JComboBox<String> cboMajorDetailsForSubject;
+    private javax.swing.JComboBox<String> cboMajorDetailsForSubjectAssignment;
+    private javax.swing.JComboBox<String> cboMajorDetilsForClass;
+    private javax.swing.JComboBox<String> cboMajorForClass;
     private javax.swing.JComboBox<String> cboMajorForDetails;
     private javax.swing.JComboBox<String> cboMajorForSubject;
     private javax.swing.JPanel container;
@@ -2773,9 +3164,13 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton33;
     private javax.swing.JButton jButton34;
+    private javax.swing.JButton jButton35;
+    private javax.swing.JButton jButton36;
     private javax.swing.JButton jButton37;
     private javax.swing.JButton jButton38;
+    private javax.swing.JButton jButton39;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton40;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
@@ -2811,12 +3206,23 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JList<String> jListClass;
+    private javax.swing.JList<String> jListSubject;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -2849,19 +3255,25 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel36;
     private javax.swing.JPanel jPanel37;
     private javax.swing.JPanel jPanel38;
+    private javax.swing.JPanel jPanel39;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel40;
+    private javax.swing.JPanel jPanel41;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTable jTable1;
@@ -2883,6 +3295,7 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JRadioButton rdoLectureMale;
     private javax.swing.JRadioButton rdoMale;
     private javax.swing.JTable tblBuilding;
+    private javax.swing.JTable tblClass;
     private javax.swing.JTable tblLecture;
     private javax.swing.JTable tblMajor;
     private javax.swing.JTable tblMajor1;

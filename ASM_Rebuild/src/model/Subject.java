@@ -20,6 +20,18 @@ public class Subject extends MajorDetails{
         this.subjectName = subjectName;
     }
 
+    public Subject(int subjectId, int majorDetaisId) {
+        super(majorDetaisId);
+        this.subjectId = subjectId;
+    }
+
+    public Subject(int subjectId, String subjectCode, String subjectName) {
+        this.subjectId = subjectId;
+        this.subjectCode = subjectCode;
+        this.subjectName = subjectName;
+    }
+    
+    
     public Subject(String subjectName, int majorDetaisId, int Majorid) {
         super(majorDetaisId, Majorid);
         this.subjectName = subjectName;
@@ -51,6 +63,6 @@ public class Subject extends MajorDetails{
 
     @Override
     public String toString() {
-        return "Subject{" + "subjectId=" + subjectId + ", subjectCode=" + subjectCode + ", subjectName=" + subjectName + '}';
+        return subjectCode+"-"+subjectName;
     }   
 }

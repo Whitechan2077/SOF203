@@ -5,7 +5,7 @@
 package service;
 
 import java.util.LinkedList;
-import model.Classroom;
+import model.ClassRoom;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,14 +16,14 @@ import model.Building;
  * @author buidu
  */
 public class BuildingService {
-    public LinkedList<Classroom> getAllBuidingDetails(){
-           LinkedList<Classroom> listClassRom = new LinkedList<>();
+    public LinkedList<ClassRoom> getAllBuidingDetails(){
+           LinkedList<ClassRoom> listClassRom = new LinkedList<>();
         try {
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("SELECT * FROM  dbo.RomDetails()");
             ResultSet rs = cstm.executeQuery();
             while(rs.next()){
-                listClassRom.add(new Classroom(rs.getInt("idPhong"),rs.getInt("soPhong"),rs.getInt("idToa"),rs.getString("maToa")));
+                listClassRom.add(new ClassRoom(rs.getInt("idPhong"),rs.getInt("soPhong"),rs.getInt("idToa"),rs.getString("maToa")));
             }
             conn.close();
             cstm.close();
@@ -63,7 +63,7 @@ public class BuildingService {
         return listBuilding;
     }
     
-    public void insertClassRoom(Classroom o){
+    public void insertClassRoom(ClassRoom o){
         try {
             Connection conn = DataBaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertRoom (?,?)}");
