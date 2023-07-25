@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Class;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 /**
  *
  * @author buidu
@@ -23,7 +23,7 @@ public class ClassService {
         try {
             Statement stm;
             ResultSet rs;
-            try (Connection conn = DataBaseConnection.getConnection()) {
+            try (Connection conn = DatabaseConnection.getConnection()) {
                 stm = conn.createStatement();
                 rs = stm.executeQuery("SELECT  * FROM dbo.GetClassData()");
                 while(rs.next()){
@@ -39,7 +39,7 @@ public class ClassService {
     }
     public void insertClass(Class o){
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertClass (?,?,?)}");
             cstm.setInt(1, o.getMajorid());
             cstm.setInt(2, o.getMajorDetaisId());
@@ -56,11 +56,36 @@ public class ClassService {
         try {
             Statement stm;
             ResultSet rs;
-            try (Connection conn = DataBaseConnection.getConnection()) {
+            try (Connection conn = DatabaseConnection.getConnection()) {
                 stm = conn.createStatement();
                 rs = stm.executeQuery("SELECT  * FROM dbo.GetClassData() WHERE GetClassData.idNganhHep = "+id);
                 while(rs.next()){
                     listClass.add(new Class(rs.getInt("idLop"),rs.getString("maLOp"),rs.getInt("idPhong"),rs.getString("tenPhong"),rs.getInt("idNganhHep"),rs.getString("tenNganhHep"),rs.getInt("idNganh"),rs.getString("tenNganh")));
+                }
+            }
+            stm.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(MajorService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listClass;
+    }
+      public LinkedList<Class> getAllClassDataByLectureID(int id){
+        LinkedList<Class> listClass = new LinkedList<>();
+        try {
+            Statement stm;
+            ResultSet rs;
+            try (Connection conn = DatabaseConnection.getConnection()) {
+                stm = conn.createStatement();
+                rs = stm.executeQuery("""
+	SELECT lopHoc.idLop,lopHoc.maLop,Nganh_Hep.tenNganhHep,Phan_Cong.idMonHoc,Mon_Hoc.tenMon
+                                                	FROM Phan_Cong JOIN lopHoc on Phan_Cong.idLop = lopHoc.idLop 
+                                                	JOIN Giang_Vien ON Giang_Vien.idGiangVien = Phan_Cong.idGiangVien 
+                                                	JOIN Nganh_Hep on lopHoc.idNganhHep = Nganh_Hep.idNganhHep 
+                        							JOIN Mon_Hoc on Phan_Cong.idMonHoc = Mon_Hoc.idMonHoc
+                                                	WHERE Giang_Vien.idGiangVien ="""+id);
+                while(rs.next()){
+                    listClass.add(new Class(rs.getInt("idLop"),rs.getString("maLop"),rs.getInt("idMonHoc"),rs.getString("tenMon"),rs.getString("tenNganhHep")));
                 }
             }
             stm.close();

@@ -9,7 +9,7 @@ import model.ClassRoom;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 import model.Building;
 /**
  *
@@ -19,7 +19,7 @@ public class BuildingService {
     public LinkedList<ClassRoom> getAllBuidingDetails(){
            LinkedList<ClassRoom> listClassRom = new LinkedList<>();
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("SELECT * FROM  dbo.RomDetails()");
             ResultSet rs = cstm.executeQuery();
             while(rs.next()){
@@ -35,7 +35,7 @@ public class BuildingService {
     }
     public void insertNewBuilding(Building o){
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("EXEC p_insertBuilding ?");
             cstm.setString(1,o.getBuilingCode());
             cstm.execute();
@@ -48,7 +48,7 @@ public class BuildingService {
     public LinkedList<Building> getBuildingIformations(){
            LinkedList<Building> listBuilding = new LinkedList<>();
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("SELECT * FROM toaNha");
             while(rs.next()){
@@ -65,7 +65,7 @@ public class BuildingService {
     
     public void insertClassRoom(ClassRoom o){
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertRoom (?,?)}");
             cstm.setInt(1,o.getIdBuiding());
             cstm.setInt(2, o.getRommcode());

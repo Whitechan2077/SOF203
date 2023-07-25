@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 import model.MajorDetails;
 /**
  *
@@ -19,7 +19,7 @@ public class MajorDetailsService {
     public LinkedList< MajorDetails> getMajorDetails(int id){
         LinkedList< MajorDetails> listMajorDetails = new LinkedList<>();
         try {
-            try (Connection conn = DataBaseConnection.getConnection(); Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery("SELECT * FROM dbo.GetChuyenNganhById("+id+")")) {
+            try (Connection conn = DatabaseConnection.getConnection(); Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery("SELECT * FROM dbo.GetChuyenNganhById("+id+")")) {
                 while (rs.next()) {
                     listMajorDetails.add(new MajorDetails(rs.getInt("idNganhHep"),rs.getString("maNganh"),rs.getString("tenNganhHep"),rs.getInt("idNganhHep"),rs.getString("tenNganh"),rs.getString("maNganh")));
                 }
@@ -31,7 +31,7 @@ public class MajorDetailsService {
     }
     public void insertMajorDetails(MajorDetails o){
         try {
-            Connection conn  = DataBaseConnection.getConnection();
+            Connection conn  = DatabaseConnection.getConnection();
             CallableStatement csmt = conn.prepareCall("{CALL p_insertNganhHep(?,?,?)}");
             csmt.setInt(1, o.getMajorid());
             csmt.setString(2,o.getMajorDetailsCode());
@@ -48,7 +48,7 @@ public class MajorDetailsService {
        try {
             Statement stm;
             ResultSet rs;
-            try (Connection conn = DataBaseConnection.getConnection()) {
+            try (Connection conn = DatabaseConnection.getConnection()) {
                 stm = conn.createStatement();
                 rs = stm.executeQuery("SELECT * FROM Nganh_Hep WHERE idNganh = "+id);
                 while(rs.next()){

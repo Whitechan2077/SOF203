@@ -8,12 +8,12 @@ import java.sql.*;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 public class StudentService {
     public Student getStudentDetail(int studentId){
           Student stu = new Student();
         try {          
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("""
             SELECT Sinh_Vien.idSinhVien,Nganh_Hep.tenNganhHep,Sinh_Vien.tenSinhVien,Sinh_Vien.gioiTinh,tenNganh,Sinh_Vien.email,Sinh_Vien.diaChi,Sinh_Vien.sdt,Sinh_Vien.hinhAnh
             FROM Sinh_Vien JOIN Nganh_Hep ON Sinh_Vien.idNganhHep = Nganh_Hep.idNganhHep JOIN Chuyen_Nganh on Nganh_Hep.idNganh = Chuyen_Nganh.idNganh WHERE idSinhVien like ?""");
@@ -41,7 +41,7 @@ public class StudentService {
     public LinkedList<Student> getAlLStudentDetail(){
           LinkedList<Student> listStudent = new LinkedList<>();
         try {          
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("SELECT * FROm dbo.GetStudentData()");
             ResultSet rs = cstm.executeQuery();
             while(rs.next()){
@@ -68,7 +68,7 @@ public class StudentService {
     }
     public void insertStudent(Student o){
         try {          
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertSinhVien (?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getStudentName());
             cstm.setInt(2, o.getMajorid());
@@ -88,7 +88,7 @@ public class StudentService {
     }
     public void updateStudent(Student o){
                 try {          
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_updateStudent (?,?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getStudentName());
             cstm.setInt(2, o.getMajorid());
@@ -106,5 +106,26 @@ public class StudentService {
         } catch (SQLException ex) {
             Logger.getLogger(StudentService.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public LinkedList<Student> getStudentByMajorDetailsIdForAssignment(int id){
+        LinkedList listStudent = new LinkedList();
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement pstm = conn.prepareCall("""
+                  SELECT Sinh_Vien.idSinhVien,Sinh_Vien.tenSinhVien 
+                         FROM Sinh_Vien left JOIN ThamGiaHoc ON Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien
+                    	 WHERE Sinh_Vien.idNganhHep = ?  AND ThamGiaHoc.idSinhVien is null """);
+            pstm.setInt(1, id);
+            ResultSet rs = pstm.executeQuery();
+            while(rs.next()){
+                listStudent.add(new Student(rs.getInt("idSinhVien"),rs.getString("tenSinhVien")));
+            }
+            conn.close();
+            pstm.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return listStudent; 
     }
 }

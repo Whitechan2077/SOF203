@@ -28,6 +28,10 @@ public class Student extends MajorDetails{
         this.image = image;
     }
 
+    public Student(int studentId) {
+        this.studentId = studentId;
+    }
+    
     public Student(String studentName, byte gender, String email, String address, String phoneNum, byte[] image, int majorDetaisId, int Majorid) {
         super(majorDetaisId, Majorid);
         this.studentName = studentName;
@@ -47,6 +51,11 @@ public class Student extends MajorDetails{
         this.address = address;
         this.phoneNum = phoneNum;
         this.image = image;
+    }
+
+    public Student(int studentId, String studentName) {
+        this.studentId = studentId;
+        this.studentName = studentName;
     }
     
     public Student() {
@@ -106,6 +115,11 @@ public class Student extends MajorDetails{
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    @Override
+    public String toString() {
+        return studentName;
     }
                        
 }

@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.ClassRoom;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 /**
  *
  * @author buidu
@@ -20,7 +20,7 @@ public class ClassRoomService {
     public LinkedList<ClassRoom> getRooms(int id){
         LinkedList<ClassRoom> listClassRoom = new LinkedList<>();
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("""
         SELECT RomDetails.idPhong,RomDetails.tenPhong,RomDetails.idToa,RomDetails.maToa,RomDetails.soPhong,RomDetails.maToa
                 		FROM  dbo.RomDetails() LEFT JOIN lopHoc ON lopHoc.idPhong = RomDetails.idPhong 

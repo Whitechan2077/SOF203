@@ -23,6 +23,10 @@ public class MajorDetails extends Major{
     public MajorDetails(int majorDetaisId) {
         this.majorDetaisId = majorDetaisId;
     }
+
+    public MajorDetails(String majorDetailsName) {
+        this.majorDetailsName = majorDetailsName;
+    }
     
     public MajorDetails(String majorDetailsCode, String majorDetailsName, int Majorid) {
         super(Majorid);

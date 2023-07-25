@@ -8,7 +8,7 @@ import model.Lecture;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 /**
  *
  * @author buidu
@@ -17,7 +17,7 @@ public class LectureService {
     public LinkedList<Lecture> getAllLectureData(){
         LinkedList<Lecture> listLecture  = new LinkedList<>();
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("select * from dbo.LectureData()");
             while (rs.next()) {                
@@ -34,7 +34,7 @@ public class LectureService {
     
         public void insertStudent(Lecture o){
         try {          
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertLecture (?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getLectureName());
             cstm.setInt(2, o.getMajorid());
@@ -53,7 +53,7 @@ public class LectureService {
     }
         public void updateLecture(Lecture o){
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_updateLecture(?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getLectureName());
             cstm.setInt(2, o.getMajorid());
@@ -71,4 +71,21 @@ public class LectureService {
             Logger.getLogger(LectureService.class.getName()).log(Level.SEVERE, null, ex);
         }
         }
+         public Lecture getAllLectureDataByLectureId(int id){
+        Lecture ls = new Lecture();
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("select * from dbo.LectureData() WHERE idGiangVien ="+id);
+            while (rs.next()) {                
+                ls = new Lecture(rs.getInt("idGiangVien"),rs.getString("tenGiangVien"),rs.getString("sdt"),rs.getByte("gioiTinh"),rs.getString("diaChi"),rs.getBytes("hinhAnh"),rs.getString("email"),rs.getInt("idNganh"), rs.getString("tenNganh"));
+            }
+            conn.close();
+            stm.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(LectureService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ls;
+    }
 }

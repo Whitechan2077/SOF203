@@ -4,7 +4,7 @@
  */
 package service;
 import model.Subject;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -17,7 +17,7 @@ public class SubjectService {
     public LinkedList<Subject> getrAllSubjectsData(){
         LinkedList<Subject> listSubjet = new LinkedList<>();
         try {
-            Connection conn =  DataBaseConnection.getConnection();
+            Connection conn =  DatabaseConnection.getConnection();
             Statement stm =  conn.createStatement();
             ResultSet rs = stm.executeQuery("SELECT * from   dbo.SubjectData()");
             while (rs.next()) {                
@@ -33,7 +33,7 @@ public class SubjectService {
     }
     public void insertSubject(Subject o){
         try {
-            Connection conn =  DataBaseConnection.getConnection();
+            Connection conn =  DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertMonHoc (?,?,?)}");
             cstm.setInt(1, o.getMajorid());
             if (o.getMajorDetaisId() == 0) {
@@ -55,7 +55,7 @@ public class SubjectService {
 public LinkedList<Subject> getrAllSubjectsDataByMajorId(int majorId,int classId){
         LinkedList<Subject> listSubjet = new LinkedList<>();
         try {
-            Connection conn =  DataBaseConnection.getConnection();
+            Connection conn =  DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("""
             SELECT mh.idMonHoc,mh.maMon,mh.tenMon
                     FROM lopHoc lh

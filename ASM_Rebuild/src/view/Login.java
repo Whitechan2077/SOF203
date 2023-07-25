@@ -27,16 +27,18 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this,"Tài khoản hoặc mật khẩu không chính xác","Thông báo",JOptionPane.ERROR_MESSAGE);
         }
         else{
-            this.dispose();
             UserService.setCurrentUser(user);
+            System.out.println(user.getMaId());
+            this.dispose();
             if (user.getLectureId() !=0) {
-                
+                LectureForm lf = new LectureForm();
+                lf.setVisible(true);
             }
-            if(user.getStudentId()!=0){
+            else if(user.getStudentId()!=0){
                 StudentForm stuf = new StudentForm();
                 stuf.setVisible(true);
             }
-            if(user.getMaId() != 0){
+            else if(user.getMaId() != 0){
                 ManagerForm ma = new ManagerForm();
                 ma.setVisible(true);
             }

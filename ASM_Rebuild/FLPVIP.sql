@@ -166,15 +166,21 @@ BEGIN
 		VALUES(@mark)
 END
 GO
-Create trigger tg_updateMark On Diem
+Create OR ALTER trigger  tg_updateMark On Diem
 FOR update
 AS
 BEGIN
 	DECLARE @mark float
+	DECLARE @idSinhVien int
+	DECLARE @subjectID int
+	SELECT @subjectID=idMonHoc FROM inserted
+	SELECT @idSinhVien = idSinhVien FROM inserted
 	SELECT @mark = (lab1+lab2+lab3+lab4+lab5+lab6+lab7+lab8+asm1+asm2+asmBaoVe)/11 FROM  inserted
-	INSERT INTO Diem(tbm)
-		VALUES(@mark)
+	WHERE idSinhVien =@idSinhVien AND idMonHoc = @subjectID
+	UPdate Diem SET tbm = @mark WHERE idSinhVien =@idSinhVien AND idMonHoc = @subjectID
 END
+SELECT * FROM Diem
+	UPdate Diem SET lab1 = 10 WHERE idSinhVien =1 AND idMonHoc = 56
 GO
 create or alter PROCEDURE p_insertNganh
 	@maNganh varchar(5),@tenNganh nvarchar(20)
@@ -427,7 +433,7 @@ SElect * from Phan_Cong
 SELECT * FROm lopHoc
 SELECT * FROM phongHoc
 SELECT * FROM Ky_hoc
-EXEC p_insertPhanCong 15,1,14,2;
+
 SELECT * FROM Phan_Cong
 GO
 
@@ -662,13 +668,235 @@ SELECT RomDetails.idPhong,RomDetails.tenPhong,RomDetails.idToa,RomDetails.maToa,
 SELECT  * FROM dbo.GetClassData()	
 SELECT * FROM lopHoc
 SELECT * FROM Mon_Hoc
-SELECT * FROM Phan_Cong
+
 DELETE FROM Phan_Cong
 EXEC p_insertPhanCong 3,56	
 GO
 SELECT mh.idMonHoc,mh.maMon,mh.tenMon
 FROM lopHoc lh
-CROSS JOIN Mon_Hoc mh
+CROSS JOIN Mon_Hoc mh 
 LEFT JOIN Phan_Cong pc ON pc.idLop = lh.idLop AND pc.idMonHoc = mh.idMonHoc
 WHERE lh.idLop = 3 AND mh.idNganh = 1
 AND pc.idPhanCong IS NULL;
+SELECT * FROM Phan_Cong
+EXEC p_insertPhanCong 
+GO
+SELECT Phan_Cong.idPhanCong,Phan_Cong.idLop,lopHoc.maLop,Phan_Cong.idMonHoc,Mon_Hoc.maMon,Mon_Hoc.tenMon,Phan_Cong.idMonHoc 
+	  FROM Phan_Cong JOIN lopHoc on Phan_Cong.idLop = lopHoc.idLop 
+			JOIN Mon_Hoc ON Mon_Hoc.idMonHoc = Phan_Cong.idMonHoc
+		WHERE lopHoc.idLop = 1
+SELECT Phan_Cong.idLop,Giang_Vien.idGiangVien,Giang_Vien.tenGiangVien  FROM Phan_Cong LEFT JOIN Giang_Vien ON Phan_Cong.idGiangVien = Giang_Vien.idGiangVien
+	WHERE Phan_Cong.idGiangVien is null AND Phan_Cong.idLop = 3
+SELECT* FROM Giang_Vien
+SELECT * FROM Phan_Cong WHERE Phan_Cong.idLop = 3
+
+SELECT gv.idGiangVien, gv.tenGiangVien
+FROM Giang_Vien gv
+LEFT JOIN Phan_Cong pc ON gv.idGiangVien = pc.idGiangVien AND pc.idLop = 3 AND gv.idNganh =1
+WHERE pc.idPhanCong IS NULL;
+
+SELECT Phan_Cong.idMonHoc,Mon_Hoc.maMon,Mon_Hoc.tenMon 
+	FROm Phan_Cong JOIN Mon_Hoc ON Phan_Cong.idMonHoc = Mon_Hoc.idMonHoc
+	WHERE Phan_Cong.idLop = 3
+SELECT * FRom Phan_Cong WHERE idGiangVien is NULL
+SELECT * FROM Phan_Cong WHERE Phan_Cong.idLop = 14
+UPDATE Phan_Cong SET idGiangVien = ? WHERE idLop = ? AND idMonHoc = ?
+GO
+SELECT lopHoc.idLop,lopHoc.maLop,Mon_Hoc.idMonHoc,Mon_Hoc.maMon,Mon_Hoc.tenMon,Phan_Cong.idGiangVien,Giang_Vien.tenGiangVien,Mon_Hoc.idMonHoc
+		FROM Phan_Cong LEFT JOIN Giang_Vien ON Phan_Cong.idGiangVien = Giang_Vien.idGiangVien
+		FULL JOIN lopHoc ON Phan_Cong.idLop =  lopHoc.idLop FULL JOIN Mon_Hoc ON Mon_Hoc.idMonHoc= Phan_Cong.idMonHoc
+WHERE Phan_Cong.idLop = 14
+DELETE  FROM Phan_Cong
+DELETE FROM lopHoc
+SELECT * FROM lopHoc
+SELECT Sinh_Vien.idSinhVien,Sinh_Vien.tenSinhVien 
+     FROM Sinh_Vien left JOIN ThamGiaHoc ON Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien
+	 WHERE Sinh_Vien.idNganhHep = 1  AND ThamGiaHoc.idSinhVien is null 
+GO
+SELECT * FROM ThamGiaHoc
+DELETE FROM ThamGiaHoc
+SELECT * FROM Sinh_Vien
+
+GO
+CREATE OR ALTER Trigger tg_insertClassJoining ON LopHoc 
+for insert 
+	AS
+	BEGIN
+	DECLARE @classID int
+	SELECT @classID = idLop FROM inserted
+	INSERT INTO ThamGiaHoc(idLop)
+		VALUES(@classID)
+	END
+GO
+CREATE or ALTER Trigger tg_AutoInsertSubject on ThamGiaHoc
+for insert
+AS
+	BEGIN
+	DECLARE @ClassID int
+	SELECT @ClassID = idLop FROM inserted
+	DECLARE @tableSubject table(studentId int,subjectId int)
+	DECLARE @studentID int
+	SELECT @studentID = idSinhVien FROM inserted
+	INSERT into @tableSubject
+	SELECT idSinhVien,idMonHoc
+	FROM Phan_Cong JOIN lopHoc on Phan_Cong.idLop = lopHoc.idLop JOIN ThamGiaHoc ON ThamGiaHoc.idLop = lopHoc.idLop
+	WHERE lopHoc.idLop = @ClassID AND ThamGiaHoc.idSinhVien = @studentID
+	INSERT INTO Diem(idSinhVien,idMonHoc,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm)
+		SELECT studentId,subjectId,0,0,0,0,0,0,0,0,0,0,0,0 FROM @tableSubject
+	END
+GO
+SELECT * FROM Diem
+SELECT * FROM lopHoc 
+SELECT * FROM Sinh_Vien
+SELECT * FROM Phan_Cong
+SELECT * FROM Giang_Vien
+SELECT * FROM  Diem
+SELECT * FROM ThamGiaHoc
+DELETE FROM ThamGiaHoc
+DELETE FROM Diem
+INSERT INTO ThamGiaHoc(idLop,idSinhVien)
+	VALUES(16,1)
+SELECT idSinhVien,idMonHoc
+	FROM Phan_Cong JOIN lopHoc on Phan_Cong.idLop = lopHoc.idLop JOIN ThamGiaHoc ON ThamGiaHoc.idLop = lopHoc.idLop
+	WHERE lopHoc.idLop = 16
+	--Diem sinh vien
+	SELECT Phan_Cong.idLop,Diem.idSinhVien,Sinh_Vien.tenSinhVien,Diem.idMonHoc,tenSinhVien,Mon_Hoc.tenMon,Mon_Hoc.maMon,
+		lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm
+		FROM Giang_Vien JOIN
+	     Phan_Cong on Giang_Vien.idGiangVien = Phan_Cong.idGiangVien 
+		 JOIN Diem ON Phan_Cong.idMonHoc = Diem.idMonHoc
+		 JOIN Sinh_Vien on Diem.idSinhVien = Sinh_Vien.idSinhVien JOIN Mon_Hoc on Diem.idMonHoc = Mon_Hoc.idMonHoc
+		 Group by Phan_Cong.idLop,Diem.idSinhVien,Sinh_Vien.tenSinhVien,Diem.idMonHoc,tenSinhVien,Mon_Hoc.tenMon,Mon_Hoc.maMon,
+		lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm
+		HAVING Diem.idMonHoc = 56 ANd Phan_Cong.idLop =22
+		SELECT * FROM Phan_Cong
+		SELECT * FROm ThamGiaHoc WHERE idLop=20 
+		SELECT * FROm Diem
+		SELECT * FROM Giang_Vien
+		SELECT * FROM lopHoc
+		SELECT * FROM Mon_Hoc
+SELECT lopHoc.maLop,Sinh_Vien.idSinhVien,tenSinhVien
+	FROM ThamGiaHoc JOIN lopHoc ON ThamGiaHoc.idLop = lopHoc.idLop 
+	JOIN Sinh_Vien ON Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien 
+	WHERE lopHoc.idLop = 16
+	SELECT * FROM Diem
+
+	SELECT Diem.maDiem,Mon_Hoc.tenMon,Mon_Hoc.maMon,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm
+	FROM Diem JOIN Sinh_Vien ON Diem.idSinhVien = Sinh_Vien.idSinhVien 
+	JOIN Mon_Hoc ON Diem.idMonHoc = Mon_Hoc.idMonHoc
+	WHERE Sinh_Vien.idSinhVien = 1
+SELECT * FROm Users
+DELETE FRom Users WHERE username like 'dungbh@gmail.com' AND idGiangVien = 24
+
+SELECT lopHoc.idLop,lopHoc.maLop,Nganh_Hep.tenNganhHep
+	FROM Phan_Cong JOIN lopHoc on Phan_Cong.idLop = lopHoc.idLop 
+	JOIN Giang_Vien ON Giang_Vien.idGiangVien = Phan_Cong.idGiangVien 
+	JOIN Nganh_Hep on lopHoc.idNganhHep = Nganh_Hep.idNganhHep
+	WHERE Giang_Vien.idGiangVien = 3
+SELECT * FROM Giang_Vien
+SELECT * FROM Phan_Cong
+SELECT * FROM Mon_Hoc
+DELETE  FROM lopHoc
+select * from Diem
+DELETE  FROM lopHoc
+SELECT *  FROM Phan_Cong
+DELETE FROM Diem
+DELETE FROM ThamGiaHoc
+INSERT INTO Phan_Cong(idLop,idMonHoc)
+						values(19,33)
+EXEC p_updateStudent 
+
+SELECT ThamGiaHoc.idSinhVien,Phan_Cong.idMonHoc,Mon_Hoc.tenMon,Mon_Hoc.maMon,Phan_Cong.idGiangVien,lopHoc.idLop,Sinh_Vien.tenSinhVien,
+Diem.lab1,Diem.lab2,Diem.lab3,Diem.lab4,diem.lab5,Diem.lab6,Diem.lab7,Diem.lab8,Diem.asm1,Diem.asm2,Diem.asmBaoVe,Diem.tbm
+	FROM Phan_Cong JOIN lopHoc ON  lopHoc.idLop=Phan_Cong.idLop 
+	JOIN ThamGiaHoc on lopHoc.idLop = ThamGiaHoc.idLop 
+	JOIN Sinh_Vien ON Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien
+	JOIN Mon_Hoc ON Phan_Cong.idMonHoc = Mon_Hoc.idMonHoc
+	JOIN Diem on Sinh_Vien.idSinhVien = Diem.idSinhVien
+	GROUP BY ThamGiaHoc.idSinhVien,Phan_Cong.idMonHoc,Mon_Hoc.tenMon,Mon_Hoc.maMon,Phan_Cong.idGiangVien,lopHoc.idLop,Sinh_Vien.tenSinhVien,
+Diem.lab1,Diem.lab2,Diem.lab3,Diem.lab4,diem.lab5,Diem.lab6,Diem.lab7,Diem.lab8,Diem.asm1,Diem.asm2,Diem.asmBaoVe,Diem.tbm,Mon_Hoc.idMonHoc
+	HAVING lopHoc.idLop = 24 AND Phan_Cong.idGiangVien =1 AND Mon_Hoc.idMonHoc =56
+ SELECT * FROM lopHoc
+
+SELECT Sinh_Vien.idSinhVien,tenSinhVien,Mon_Hoc.maMon,Mon_Hoc.idMonHoc,Mon_Hoc.tenMon,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm,lopHoc.idLop
+	FROM Phan_Cong JOIN lopHoc on Phan_Cong.idLop = lopHoc.idLop 
+		 JOIN ThamGiaHoc ON ThamGiaHoc.idLop = ThamGiaHoc.idLop
+		 JOIN Sinh_Vien ON ThamGiaHoc.idSinhVien = Sinh_Vien.idSinhVien 
+		 JOIN Diem on Sinh_Vien.idSinhVien = Diem.idSinhVien 
+		 JOIN Mon_Hoc ON Diem.idMonHoc = Mon_Hoc.idMonHoc
+	WHERE Phan_Cong.idGiangVien = 5 AND lopHoc.idLop=24 AND Diem.idMonHoc = 33
+	SELECT * FROM Mon_Hoc
+
+	SELECT lopHoc.idLop,lopHoc.maLop,Nganh_Hep.tenNganhHep,Phan_Cong.idMonHoc,Mon_Hoc.tenMon
+                        	FROM Phan_Cong JOIN lopHoc on Phan_Cong.idLop = lopHoc.idLop 
+                        	JOIN Giang_Vien ON Giang_Vien.idGiangVien = Phan_Cong.idGiangVien 
+                        	JOIN Nganh_Hep on lopHoc.idNganhHep = Nganh_Hep.idNganhHep 
+							JOIN Mon_Hoc on Phan_Cong.idMonHoc = Mon_Hoc.idMonHoc
+                        	WHERE Giang_Vien.idGiangVien =1
+
+UPDATE Diem SET lab1 =10 ,lab2=10,lab3=10,lab4=10,lab5=10,lab6=10,lab7=0,lab8=10,asm1=10,asm2=10,asmBaoVe=10
+		WHERE  Diem.idMonHoc = 56 AND Diem.idSinhVien = 1
+SELECT * FROM Mon_Hoc
+
+CREATE OR ALTER TRIGGER trg_AfterInsertPhanCong
+ON Phan_Cong
+AFTER INSERT
+AS
+BEGIN
+    -- Insert dữ liệu vào bảng Diem
+    INSERT INTO Diem (idSinhVien, idMonHoc,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm)
+    SELECT ThamGiaHoc.idSinhVien, inserted.idMonHoc,0,0,0,0,0,0,0,0,0,0,0,0
+    FROM ThamGiaHoc
+    INNER JOIN inserted ON ThamGiaHoc.idLop = inserted.idLop;
+END;
+
+
+
+DELETE  FROM ThamGiaHoc
+DELETE FROM lopHoc
+DELETE FROM Phan_Cong
+SELECT *  FROM Mon_Hoc
+UPDATE Diem SET tbm = 0
+SELECT Sinh_Vien.idSinhVien,tenSinhVien,Mon_Hoc.maMon,Mon_Hoc.idMonHoc,Mon_Hoc.tenMon,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm
+	FROM Phan_Cong JOIN lopHoc on Phan_Cong.idLop = lopHoc.idLop 
+		 JOIN ThamGiaHoc ON ThamGiaHoc.idLop = ThamGiaHoc.idLop
+		 JOIN Sinh_Vien ON ThamGiaHoc.idSinhVien = Sinh_Vien.idSinhVien 
+		 JOIN Diem on Sinh_Vien.idSinhVien = Diem.idSinhVien 
+		 JOIN Mon_Hoc ON Diem.idMonHoc = Mon_Hoc.idMonHoc
+	WHERE Phan_Cong.idGiangVien = 5 AND lopHoc.idLop=25 AND Diem.idMonHoc = ?
+
+SELECT  Diem.idSinhVien,Sinh_Vien.tenSinhVien,Phan_Cong.idMonHoc,Phan_Cong.idLop,
+	lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm
+	FROM Giang_Vien JOIN Phan_Cong ON Giang_Vien.idGiangVien = Phan_Cong.idGiangVien
+	JOIN ThamGiaHoc ON Phan_Cong.idLop = ThamGiaHoc.idLop 
+	JOIN Sinh_Vien on Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien JOIN Diem ON Sinh_Vien.idSinhVien = Diem.idSinhVien
+	GROUP BY Phan_Cong.idGiangVien,Giang_Vien.tenGiangVien,Sinh_Vien.tenSinhVien,Phan_Cong.idMonHoc,Phan_Cong.idLop,
+	lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm,ThamGiaHoc.idLop,Diem.idSinhVien
+	HAVING Phan_Cong.idGiangVien = 5 AND Phan_Cong.idMonHoc=33 AND ThamGiaHoc.idLop = 28 
+
+
+	SELECT Diem.idSinhVien,Sinh_Vien.tenSinhVien,Phan_Cong.idLop,Phan_Cong.idMonHoc,Phan_Cong.idGiangVien
+		FROM Phan_Cong JOIN ThamGiaHoc on Phan_Cong.idLop =ThamGiaHoc.idLop 
+	JOIN Sinh_Vien ON Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien JOIN Diem ON Diem.idSinhVien = Sinh_Vien.idSinhVien
+	GROUP BY Diem.idSinhVien,Sinh_Vien.tenSinhVien,Phan_Cong.idLop,Phan_Cong.idMonHoc,Phan_Cong.idGiangVien
+
+CREATE FUNCTION GetStudentDetailsForMark()
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT Diem.idSinhVien, Sinh_Vien.tenSinhVien, Phan_Cong.idLop, Phan_Cong.idMonHoc, Phan_Cong.idGiangVien
+    FROM Phan_Cong
+    JOIN ThamGiaHoc ON Phan_Cong.idLop = ThamGiaHoc.idLop 
+    JOIN Sinh_Vien ON Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien 
+    JOIN Diem ON Diem.idSinhVien = Sinh_Vien.idSinhVien
+    GROUP BY Diem.idSinhVien, Sinh_Vien.tenSinhVien, Phan_Cong.idLop, Phan_Cong.idMonHoc, Phan_Cong.idGiangVien
+);
+SELECT * FROm GetStudentDetailsForMark() AS details JOIN Diem on Diem.idMonHoc = details.idMonHoc
+	WHERE details.idGiangVien = 5 AND details.idLop= 29 AND details.idMonHoc = 33
+
+	SELECT Diem.idSinhVien,ThamGiaHoc.idLop,tenSinhVien,Diem.idMonHoc,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm FROm Diem 
+	JOIN Sinh_Vien ON Diem.idSinhVien = Sinh_Vien.idSinhVien 
+	JOIN ThamGiaHoc  ON Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien JOIN Phan_Cong on ThamGiaHoc.idLop  = Phan_Cong.idLop
+	GROUP BY  ThamGiaHoc.idLop,tenSinhVien,Diem.idMonHoc,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm,Phan_Cong.idGiangVien,Diem.idSinhVien
+	HAVING Phan_Cong.idGiangVien = 5 AND Diem.idMonHoc = 33 AND ThamGiaHoc.idLop = 29

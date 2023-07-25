@@ -4,7 +4,7 @@
  */
 package service;
 import java.util.LinkedList;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.*;
 import java.util.logging.Level;
@@ -28,7 +28,7 @@ public class UserService {
     public LinkedList<User> getAllUser(){
             LinkedList<User> listUser = new LinkedList<>();
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             Statement stm = conn.createStatement();
             ResultSet rs =  stm.executeQuery("SELECT * FROM USERS");
             while (rs.next()) {                
@@ -50,7 +50,7 @@ public class UserService {
     public User getUser (String username,String pasword){
         User user = new User();
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("SELECT * FROM Users WHERE username like ? AND password like ?");
             cstm.setString(1, username);
             cstm.setString(2, pasword);

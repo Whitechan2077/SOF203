@@ -10,14 +10,16 @@ package model;
  */
 public class Class extends MajorDetails{
     private int idClass;
-    private String coleClass;
     private int rommId;
     private String roomName;
+    private String classCode;
+    private int subjectId;
+    private String subjectName;
 
-    public Class(int idClass, String coleClass, int rommId, String roomName, int majorDetaisId, String majorDetailsName, int Majorid, String majornName) {
+    public Class(int idClass, String classCode, int rommId, String roomName, int majorDetaisId, String majorDetailsName, int Majorid, String majornName) {
         super(majorDetaisId, majorDetailsName, Majorid, majornName);
         this.idClass = idClass;
-        this.coleClass = coleClass;
+        this.classCode = classCode;
         this.rommId = rommId;
         this.roomName = roomName;
     }
@@ -32,6 +34,46 @@ public class Class extends MajorDetails{
         super(majorDetaisId, Majorid);
         this.rommId = rommId;
     }
+
+    public Class(int idClass, String classCode, int subjectId, String subjectName, String majorDetailsName) {
+        super(majorDetailsName);
+        this.idClass = idClass;
+        this.classCode = classCode;
+        this.subjectId = subjectId;
+        this.subjectName = subjectName;
+    }
+    
+    public Class(int idClass, String classCode, String majorDetailsName) {
+        super(majorDetailsName);
+        this.idClass = idClass;
+        this.classCode = classCode;
+    }
+    
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
+    }
+
+    public int getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(int subjectId) {
+        this.subjectId = subjectId;
+    }
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+    
+    
     
     public String getRoomName() {
         return roomName;
@@ -49,13 +91,7 @@ public class Class extends MajorDetails{
         this.idClass = idClass;
     }
 
-    public String getColeClass() {
-        return coleClass;
-    }
 
-    public void setColeClass(String coleClass) {
-        this.coleClass = coleClass;
-    } 
 
     public int getRommId() {
         return rommId;
@@ -67,7 +103,7 @@ public class Class extends MajorDetails{
 
     @Override
     public String toString() {
-        return coleClass+"-"+super.getMajorDetailsName();
+        return classCode+"-"+super.getMajorDetailsName();
     }
     
 }

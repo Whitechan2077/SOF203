@@ -27,6 +27,15 @@ public class Lecture extends Major{
         this.img = img;
         this.email = email;
     }
+
+    public Lecture() {
+    }
+    
+    public Lecture(int lectureId, String lectureName) {
+        this.lectureId = lectureId;
+        this.lectureName = lectureName;
+    }
+    
     
     public Lecture(int lectureId, String lectureName, String phoneNum, byte gender, String address, byte[] img, String email, int Majorid) {
         super(Majorid);
@@ -107,9 +116,7 @@ public class Lecture extends Major{
 
     @Override
     public String toString() {
-        return "Lecture{" + "lectureId=" + lectureId + ", lectureName=" + lectureName + ", phoneNum=" + phoneNum + ", gender=" + gender + ", address=" + address + ", img=" + img + ", email=" + email + '}';
+        return lectureName;
     }
-    
-       
-    
+            
 }

@@ -6,7 +6,7 @@ package service;
 
 import java.util.LinkedList;
 import model.Major;
-import utilities.DataBaseConnection;
+import utilities.DatabaseConnection;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class MajorService {
         try {
             Statement stm;
             ResultSet rs;
-            try (Connection conn = DataBaseConnection.getConnection()) {
+            try (Connection conn = DatabaseConnection.getConnection()) {
                 stm = conn.createStatement();
                 rs = stm.executeQuery("SELECT * FROM Chuyen_Nganh");
                 while(rs.next()){
@@ -41,7 +41,7 @@ public class MajorService {
        try {
             Statement stm;
             ResultSet rs;
-            try (Connection conn = DataBaseConnection.getConnection()) {
+            try (Connection conn = DatabaseConnection.getConnection()) {
                 stm = conn.createStatement();
                 rs = stm.executeQuery("SELECT * FROM Chuyen_Nganh");
                 while(rs.next()){
@@ -58,7 +58,7 @@ public class MajorService {
     
     public void inputMajor(Major o){
         try {
-            Connection conn = DataBaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertNganh (?,?)}");
             cstm.setString(1,o.getMajorCode());
             cstm.setString(2, o.getMajornName());

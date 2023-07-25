@@ -20,6 +20,19 @@ public class Subject extends MajorDetails{
         this.subjectName = subjectName;
     }
 
+    
+    public Subject(int subjectId) {
+        this.subjectId = subjectId;
+    }
+
+    public Subject() {
+    }
+
+    public Subject(String subjectCode) {
+        this.subjectCode = subjectCode;
+    }
+    
+    
     public Subject(int subjectId, int majorDetaisId) {
         super(majorDetaisId);
         this.subjectId = subjectId;
