@@ -37,7 +37,7 @@ public class ClassService {
         }
         return listClass;
     }
-    public void insertClass(Class o){
+    public void insertClass(Class o) throws SQLException{
         try {
             Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertClass (?,?,?)}");
@@ -48,7 +48,7 @@ public class ClassService {
             cstm.close();
             conn.close();
         } catch (SQLException ex) {
-            Logger.getLogger(ClassService.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();
         }
     }
         public LinkedList<Class> getAllClassDataByMajorDetailsId(int id){
@@ -95,4 +95,5 @@ public class ClassService {
         }
         return listClass;
     }
+      
 }

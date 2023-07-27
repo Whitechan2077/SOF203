@@ -3,16 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package view;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
 import service.GradeService;
 import model.Grade;
+
 /**
  *
  * @author buidu
  */
 public class MarkDialog extends javax.swing.JDialog {
+
     private int studentId;
     private int lectureId;
     private int classID;
@@ -21,11 +24,11 @@ public class MarkDialog extends javax.swing.JDialog {
 
     public MarkDialog() {
     }
-    
+
     /**
      * Creates new form MarkDialog
      */
-    public MarkDialog(java.awt.Frame parent, boolean modal,int studentId,int lectureId,int classId,int subjectID) {
+    public MarkDialog(java.awt.Frame parent, boolean modal, int studentId, int lectureId, int classId, int subjectID) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
@@ -48,7 +51,8 @@ public class MarkDialog extends javax.swing.JDialog {
         txtAssignment1.setText(String.valueOf(grade.getAssignment1()));
         txtAssignment2.setText(String.valueOf(grade.getAssignment2()));
         txtFinalAssignment.setText(String.valueOf(grade.getFinalAssignment()));
-         this.addWindowListener(new WindowAdapter() {
+        setTitle("Môn "+grade.getSubjectName());
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 // Gọi phương thức của JFrame khi JDialog đóng
@@ -57,9 +61,11 @@ public class MarkDialog extends javax.swing.JDialog {
             }
         });
     }
-    public void updateMark(){
-        gsv.updateGrade(new Grade(this.subjectId,Double.parseDouble(txtLab1.getText()),Double.parseDouble(txtLab2.getText()),Double.parseDouble(txtLab3.getText()),Double.parseDouble(txtLab4.getText()),Double.parseDouble(txtLab5.getText()),Double.parseDouble(txtLab6.getText()),Double.parseDouble(txtLab7.getText()),Double.parseDouble(txtLab8.getText()),Double.parseDouble(txtAssignment1.getText()),Double.parseDouble(txtAssignment2.getText()),Double.parseDouble(txtAssignment2.getText()), this.studentId));
+
+    public void updateMark() {
+        gsv.updateGrade(new Grade(this.subjectId, Double.parseDouble(txtLab1.getText()), Double.parseDouble(txtLab2.getText()), Double.parseDouble(txtLab3.getText()), Double.parseDouble(txtLab4.getText()), Double.parseDouble(txtLab5.getText()), Double.parseDouble(txtLab6.getText()), Double.parseDouble(txtLab7.getText()), Double.parseDouble(txtLab8.getText()), Double.parseDouble(txtAssignment1.getText()), Double.parseDouble(txtAssignment2.getText()), Double.parseDouble(txtFinalAssignment.getText()), this.studentId));
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -124,9 +130,51 @@ public class MarkDialog extends javax.swing.JDialog {
             }
         });
 
+        txtLab1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLab1ActionPerformed(evt);
+            }
+        });
+
+        txtLab2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLab2ActionPerformed(evt);
+            }
+        });
+
+        txtLab3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLab3ActionPerformed(evt);
+            }
+        });
+
+        txtLab4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLab4ActionPerformed(evt);
+            }
+        });
+
         txtLab5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtLab5ActionPerformed(evt);
+            }
+        });
+
+        txtAssignment1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAssignment1ActionPerformed(evt);
+            }
+        });
+
+        txtLab6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLab6ActionPerformed(evt);
+            }
+        });
+
+        txtLab7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLab7ActionPerformed(evt);
             }
         });
 
@@ -135,6 +183,24 @@ public class MarkDialog extends javax.swing.JDialog {
         jLabel12.setText("Assignment 2");
 
         jLabel13.setText("Bài bảo vệ");
+
+        txtLab8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLab8ActionPerformed(evt);
+            }
+        });
+
+        txtAssignment2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAssignment2ActionPerformed(evt);
+            }
+        });
+
+        txtFinalAssignment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFinalAssignmentActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -251,25 +317,442 @@ public class MarkDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    private void txtLab5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab5ActionPerformed
 
+    private void txtLab5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab5ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_txtLab5ActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         try {
-            updateMark();
-            JOptionPane.showMessageDialog(this,"Nhập điểm thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this,"Vui Lòng nhập số","Cảnh báo",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
+
+    private void txtLab1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab1ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_txtLab1ActionPerformed
+
+    private void txtLab2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab2ActionPerformed
+               try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_txtLab2ActionPerformed
+
+    private void txtLab3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab3ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLab3ActionPerformed
+
+    private void txtLab4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab4ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLab4ActionPerformed
+
+    private void txtLab6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab6ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLab6ActionPerformed
+
+    private void txtLab7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab7ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLab7ActionPerformed
+
+    private void txtLab8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLab8ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLab8ActionPerformed
+
+    private void txtAssignment1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAssignment1ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAssignment1ActionPerformed
+
+    private void txtAssignment2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAssignment2ActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAssignment2ActionPerformed
+
+    private void txtFinalAssignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFinalAssignmentActionPerformed
+        try {
+            double lab1 = Double.parseDouble(txtLab1.getText());
+            double lab2 = Double.parseDouble(txtLab2.getText());
+            double lab3 = Double.parseDouble(txtLab3.getText());
+            double lab4 = Double.parseDouble(txtLab4.getText());
+            double lab5 = Double.parseDouble(txtLab5.getText());
+            double lab6 = Double.parseDouble(txtLab6.getText());
+            double lab7 = Double.parseDouble(txtLab7.getText());
+            double lab8 = Double.parseDouble(txtLab8.getText());
+            double assignment1 = Double.parseDouble(txtAssignment1.getText());
+            double assignment2 = Double.parseDouble(txtAssignment2.getText());
+            double finalAssignment = Double.parseDouble(txtFinalAssignment.getText());
+            if (lab1 >= 0 && lab1 <= 10
+                    && lab2 >= 0 && lab2 <= 10
+                    && lab3 >= 0 && lab3 <= 10
+                    && lab4 >= 0 && lab4 <= 10
+                    && lab5 >= 0 && lab5 <= 10
+                    && lab6 >= 0 && lab6 <= 10
+                    && lab7 >= 0 && lab7 <= 10
+                    && lab8 >= 0 && lab8 <= 10
+                    && assignment1 >= 0 && assignment1 <= 10
+                    && assignment2 >= 0 && assignment2 <= 10
+                    && finalAssignment >= 0 && finalAssignment <= 10) {
+                updateMark();
+                JOptionPane.showMessageDialog(this, "Nhập điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Điểm phải trong khoảng 0 ->10", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui Lòng nhập số", "Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFinalAssignmentActionPerformed
 
     /**
      * @param args the command line arguments
      */
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSubmit;

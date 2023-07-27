@@ -220,12 +220,24 @@
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLab1">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtLab1ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLab2">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtLab2ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLab3">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtLab3ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLab4">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtLab4ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLab5">
       <Events>
@@ -233,10 +245,19 @@
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtAssignment1">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtAssignment1ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLab6">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtLab6ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLab7">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtLab7ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">
       <Properties>
@@ -254,10 +275,19 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLab8">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtLab8ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtAssignment2">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtAssignment2ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtFinalAssignment">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtFinalAssignmentActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

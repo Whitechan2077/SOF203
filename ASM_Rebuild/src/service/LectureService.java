@@ -32,8 +32,8 @@ public class LectureService {
         return listLecture;
     }
     
-        public void insertStudent(Lecture o){
-        try {          
+        public void insertStudent(Lecture o) throws SQLException{
+             
             Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertLecture (?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getLectureName());
@@ -47,12 +47,9 @@ public class LectureService {
             cstm.execute();
             cstm.close();
             conn.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(StudentService.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    
     }
-        public void updateLecture(Lecture o){
-        try {
+        public void updateLecture(Lecture o) throws SQLException{
             Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_updateLecture(?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getLectureName());
@@ -67,9 +64,6 @@ public class LectureService {
             cstm.execute();
             cstm.close();
             conn.close();
-                    } catch (SQLException ex) {
-            Logger.getLogger(LectureService.class.getName()).log(Level.SEVERE, null, ex);
-        }
         }
          public Lecture getAllLectureDataByLectureId(int id){
         Lecture ls = new Lecture();

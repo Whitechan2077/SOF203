@@ -39,9 +39,9 @@ public class LectureForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Lecture.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LectureForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-       
+        setTitle(lsv.getAllLectureDataByLectureId(UserService.getCurrentUser().getLectureId()).getLectureName()+" - Quản lý điểm");
     }
     public void displayDialog(){
         Class classForLecture = (Class) cboClass.getSelectedItem();

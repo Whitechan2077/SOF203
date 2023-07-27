@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ASM_Rebuild">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/ASM_Rebuild.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

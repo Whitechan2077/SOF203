@@ -66,8 +66,8 @@ public class StudentService {
         }
         return listStudent;
     }
-    public void insertStudent(Student o){
-        try {          
+    public void insertStudent(Student o) throws SQLException{
+         
             Connection conn = DatabaseConnection.getConnection();
             CallableStatement cstm = conn.prepareCall("{CALL p_insertSinhVien (?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getStudentName());
@@ -82,13 +82,11 @@ public class StudentService {
             cstm.execute();
             cstm.close();
             conn.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(StudentService.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }
-    public void updateStudent(Student o){
-                try {          
-            Connection conn = DatabaseConnection.getConnection();
+    public void updateStudent(Student o) throws SQLException{
+          Connection conn = DatabaseConnection.getConnection();
+          conn.setAutoCommit(false);        
             CallableStatement cstm = conn.prepareCall("{CALL p_updateStudent (?,?,?,?,?,?,?,?,?)}");
             cstm.setString(1, o.getStudentName());
             cstm.setInt(2, o.getMajorid());
@@ -100,12 +98,9 @@ public class StudentService {
             cstm.setByte(8, o.getGender());
             cstm.setInt(9, o.getStudentId());
             cstm.execute();
-            System.out.println(o.toString());
+            conn.commit();
             cstm.close();
             conn.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(StudentService.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     public LinkedList<Student> getStudentByMajorDetailsIdForAssignment(int id){
         LinkedList listStudent = new LinkedList();

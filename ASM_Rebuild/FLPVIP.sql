@@ -899,4 +899,85 @@ SELECT * FROm GetStudentDetailsForMark() AS details JOIN Diem on Diem.idMonHoc =
 	JOIN Sinh_Vien ON Diem.idSinhVien = Sinh_Vien.idSinhVien 
 	JOIN ThamGiaHoc  ON Sinh_Vien.idSinhVien = ThamGiaHoc.idSinhVien JOIN Phan_Cong on ThamGiaHoc.idLop  = Phan_Cong.idLop
 	GROUP BY  ThamGiaHoc.idLop,tenSinhVien,Diem.idMonHoc,lab1,lab2,lab3,lab4,lab5,lab6,lab7,lab8,asm1,asm2,asmBaoVe,tbm,Phan_Cong.idGiangVien,Diem.idSinhVien
-	HAVING Phan_Cong.idGiangVien = 5 AND Diem.idMonHoc = 33 AND ThamGiaHoc.idLop = 29
+	HAVING Phan_Cong.idGiangVien = 5 AND Diem.idMonHoc = 33 AND ThamGiaHoc.idLop = 28
+GO
+
+CREATE OR ALTER TRIGGER tr_Chk_Update_idNganh_idNganhHep
+ON Sinh_Vien
+INSTEAD OF UPDATE
+AS
+BEGIN
+    -- Nếu có bất kỳ yêu cầu cập nhật trường "idNganhHep" hoặc "idNganh"
+    IF UPDATE(idNganhHep) OR UPDATE(idNganh)
+    BEGIN
+        -- Lấy giá trị cũ của idNganh và idNganhHep từ bản ghi gốc
+        DECLARE @old_idNganh int;
+        DECLARE @old_idNganhHep int;
+        SELECT @old_idNganh = idNganh, @old_idNganhHep = idNganhHep FROM deleted;
+
+        -- Lấy giá trị mới của idNganh và idNganhHep từ bản ghi cập nhật
+        DECLARE @new_idNganh int;
+        DECLARE @new_idNganhHep int;
+        SELECT @new_idNganh = idNganh, @new_idNganhHep = idNganhHep FROM inserted;
+
+        -- Nếu giá trị mới của idNganh và idNganhHep khác giá trị cũ
+        IF (EXISTS (SELECT 1 FROM ThamGiaHoc WHERE idSinhVien IN (SELECT idSinhVien FROM inserted)))
+        BEGIN
+			IF ( @new_idNganh <> @old_idNganh OR @new_idNganhHep <> @old_idNganhHep)
+				BEGIN
+				            RAISERROR('Không được cập nhật idNganh và idNganhHep với giá trị khác với bản ghi gốc', 16, 1)
+            ROLLBACK TRANSACTION; -- Hoàn tác giao dịch nếu có lỗi
+            RETURN;
+			END
+        END
+    END
+    UPDATE sv
+    SET sv.tenSinhVien = i.tenSinhVien,
+        sv.idNganhHep = i.idNganhHep,
+        sv.idNganh = i.idNganh,
+        sv.gioiTinh = i.gioiTinh,
+        sv.sdt = i.sdt,
+        sv.diaChi = i.diaChi,
+        sv.email = i.email,
+        sv.hinhAnh = i.hinhAnh
+    FROM Sinh_Vien sv
+    INNER JOIN inserted i ON sv.idSinhVien = i.idSinhVien;
+END;
+GO
+CREATE OR ALTER TRIGGER tr_Update_idNganh_GiangVien
+ON Giang_Vien
+INSTEAD OF UPDATE
+AS
+BEGIN
+    -- Nếu có bất kỳ yêu cầu cập nhật trường "idNganh"
+    IF UPDATE(idNganh)
+    BEGIN
+        -- Kiểm tra xem idGiangVien đã tồn tại trong bảng Phan_Cong và giá trị mới của idNganh khác giá trị cũ
+        IF EXISTS (
+            SELECT 1
+            FROM Phan_Cong pc
+            INNER JOIN inserted i ON pc.idGiangVien = i.idGiangVien
+            INNER JOIN deleted d ON pc.idGiangVien = d.idGiangVien
+            WHERE i.idNganh <> d.idNganh
+        )
+        BEGIN
+            RAISERROR('Không được cập nhật idNganh với giá trị khác với bản ghi gốc khi idGiangVien đã tồn tại trong bảng Phan_Cong', 16, 1)
+            ROLLBACK TRANSACTION; -- Hoàn tác giao dịch nếu có lỗi
+            RETURN;
+        END
+    END
+
+    -- Nếu không có yêu cầu cập nhật trường "idNganh"
+    -- Thực hiện việc cập nhật bình thường
+    UPDATE gv
+    SET gv.tenGiangVien = i.tenGiangVien,
+        gv.idNganh = i.idNganh,
+        gv.sdt = i.sdt,
+        gv.email = i.email,
+        gv.gioiTinh = i.gioiTinh,
+        gv.hinhAnh = i.hinhAnh,
+        gv.diaChi = i.diaChi
+    FROM Giang_Vien gv
+    INNER JOIN inserted i ON gv.idGiangVien = i.idGiangVien;
+END;
+

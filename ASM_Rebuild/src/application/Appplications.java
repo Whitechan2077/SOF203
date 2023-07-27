@@ -15,3 +15,4 @@ public class Appplications {
         lg.setVisible(true);
     }
 }
+ 

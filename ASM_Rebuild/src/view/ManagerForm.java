@@ -5,13 +5,17 @@
 package view;
 
 import java.awt.CardLayout;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -28,7 +32,6 @@ import model.Student;
 import model.Lecture;
 import service.LectureService;
 import service.BuildingService;
-import model.ClassRoom;
 import model.Building;
 import service.SubjectService;
 import model.Subject;
@@ -38,7 +41,6 @@ import model.ClassRoom;
 import service.ClassRoomService;
 import service.TeachingAssigmentService;
 import model.TeachingAssignment;
-
 /**
  *
  * @author buidu
@@ -71,8 +73,7 @@ public class ManagerForm extends javax.swing.JFrame {
         pnMajorDetails.setVisible(false);
         pnRoom.setVisible(false);
         pnSubject.setVisible(false);
-                pnClassJoining.setVisible(false);
-
+        pnClassJoining.setVisible(false);
     }
 
     public void openFile() {
@@ -233,11 +234,19 @@ public class ManagerForm extends javax.swing.JFrame {
         getAllMajorForTeaching();
         getAllMajorForStudentAssigmemnt();
     }
-    public void insertStudent(int majorId, int majorDetailsId) {
-        if (rdoMale.isSelected()) {
+    public void insertStudent(int majorId, int majorDetailsId){
+        try {
+          if (rdoMale.isSelected()) {
             stus.insertStudent(new Student(txtStuName.getText(),this.male,txtEmail.getText(),txtAddress.getText(),txtPhoneNum.getText(), imageData, majorDetailsId, majorId));
         } else {
             stus.insertStudent(new Student(txtStuName.getText(),this.female,txtEmail.getText(),txtAddress.getText(),txtPhoneNum.getText(), imageData, majorDetailsId, majorId));
+        }
+                      JOptionPane.showMessageDialog(this, "Thêm dữ liệu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 2627) {
+              JOptionPane.showMessageDialog(this, "Email hoặc SDT đã tồn tại", "Thông báo", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     public  void  fillToTaleClass(){
@@ -248,17 +257,28 @@ public class ManagerForm extends javax.swing.JFrame {
         }
     }
     public void insertLecture() {
+        try {
         if (rdoLectureMale.isSelected()) {
             lsv.insertStudent(new Lecture(txtLectureName.getText(),txtLecturePhoneNum1.getText(),male,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(),msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
         } else {
             lsv.insertStudent(new Lecture(txtLectureName.getText(),txtLecturePhoneNum1.getText(),male,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(),msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
         }
+        } catch (SQLException e) {
+               if (e.getErrorCode() == 2627) {
+              JOptionPane.showMessageDialog(this, "Email hoặc SDT đã tồn tại", "Thông báo", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
     public void insertClass(){
-        Major major = (Major) cboMajorForClass.getSelectedItem();
-        MajorDetails majorDetails = (MajorDetails) cboMajorDetilsForClass.getSelectedItem();
-        ClassRoom classRoom = (ClassRoom) CboRoomsForClass.getSelectedItem();
-        csv.insertClass(new Class(classRoom.getRoomId(),majorDetails.getMajorDetaisId(),major.getMajorid()));
+        try {
+            Major major = (Major) cboMajorForClass.getSelectedItem();
+            MajorDetails majorDetails = (MajorDetails) cboMajorDetilsForClass.getSelectedItem();
+            ClassRoom classRoom = (ClassRoom) CboRoomsForClass.getSelectedItem();
+            csv.insertClass(new Class(classRoom.getRoomId(),majorDetails.getMajorDetaisId(),major.getMajorid()));
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode());
+           JOptionPane.showMessageDialog(this, "Email hoặc SDT đã tồn tại", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
     }
     public void insertRoom() {
         Building b = new Building();
@@ -271,6 +291,13 @@ public class ManagerForm extends javax.swing.JFrame {
         model.setRowCount(0);
         for (Major x : msv.getAllMajor()) {
             model.addRow(new Object[]{x.getMajorid(), x.getMajorCode(), x.getMajornName()});
+        }
+    }
+    public void fillToTableMajorDetails(int majorId){
+        DefaultTableModel model = (DefaultTableModel) tblMajorDetails.getModel();
+        model.setRowCount(0);
+        for (MajorDetails x :mdsv.getMajorDetails(majorId)) {
+            model.addRow(new Object[]{x.getMajorCode(),x.getMajorDetailsName()});
         }
     }
     public void fillToTableSubjectAssignment(int id){
@@ -446,7 +473,7 @@ public class ManagerForm extends javax.swing.JFrame {
         clearForm();
     }
 
-    public void updateStudent() {
+    public void updateStudent() throws SQLException {
      
         int index = tblStudent.getSelectedRow();
         int idMajor = msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid();
@@ -461,7 +488,7 @@ public class ManagerForm extends javax.swing.JFrame {
         fillStudentToTable();
     }
 
-    public void updateLecture(int id) {
+    public void updateLecture(int id) throws SQLException {
         if (rdoLectureMale.isSelected()) {
           lsv.updateLecture(new Lecture(id, txtLectureName.getText(),txtLecturePhoneNum1.getText(), male,txtLectureAddress.getText(), imageData,txtLectureEmail.getText(), msv.getAllMajor().get(cboLectureMajor.getSelectedIndex()).getMajorid()));
         } else {
@@ -469,7 +496,7 @@ public class ManagerForm extends javax.swing.JFrame {
         }
         imageData = new byte[]{};
     }
-
+ 
     public void fillAllLectureToTable() {
         DefaultTableModel model = (DefaultTableModel) tblLecture.getModel();
         model.setRowCount(0);
@@ -519,6 +546,62 @@ public class ManagerForm extends javax.swing.JFrame {
                 model.addRow(new Object[]{x.getClassCode(),x.getSubjectCode()+"-"+x.getSubjectName(),x.getLectureName()});
             }
         }
+    }
+    public boolean vadladteStudent(){
+        boolean check = true;
+        boolean check1 = true;
+         if (txtStuName.getText().trim().equalsIgnoreCase("")||txtPhoneNum.getText().trim().equalsIgnoreCase("")||txtAddress.getText().trim().equalsIgnoreCase("")) {
+           check = false;
+         }
+         if(rdoFemale.isSelected() == false && rdoMale.isSelected() == false){
+            check1= false;
+         }
+         if (check == true && check1 == true ) {
+            return true;
+        }
+         else
+             return false;
+    }
+    public boolean validateLecture(){
+         boolean check = true;
+        boolean check1 = true;
+         if (txtLectureName.getText().trim().equalsIgnoreCase("")||txtLecturePhoneNum1.getText().trim().equalsIgnoreCase("")||txtLectureAddress.getText().trim().equalsIgnoreCase("")) {
+           check = false;
+         }
+         if(rdoLectureMale.isSelected() == false && rdoLectureMale.isSelected() == false){
+            check1= false;
+         }
+         if (check == true && check1 == true ) {
+            return true;
+        }
+         else
+             return false;
+    }
+    public boolean validateEmail(String email){
+         boolean checkEmail;
+         String regex = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@fpt\\.edu\\.vn$";
+         Pattern pattern = Pattern.compile(regex);
+         Matcher matcher = pattern.matcher(email);
+         checkEmail =  matcher.matches();
+         if (checkEmail == false) {
+            JOptionPane.showMessageDialog(this,"Vui lòng nhâp mail FPT","Cảnh báo", JOptionPane.ERROR_MESSAGE);
+        }
+         return checkEmail;
+    }
+    public boolean validatePhoneNumber(String phoneNum){
+        boolean checkPhoneNum =true;      
+        try {
+            Integer.valueOf(phoneNum);
+            if (phoneNum.length() != 10) {
+                JOptionPane.showMessageDialog(this,"Số liện thoại phải có 10 chữ số", phoneNum,JOptionPane.ERROR_MESSAGE);
+                checkPhoneNum = false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại là số","Cảnh báo",JOptionPane.ERROR_MESSAGE);
+                 checkPhoneNum = false;
+                 e.printStackTrace();
+        }
+        return checkPhoneNum;
     }
     public void insertStudentAssignment(){
         DefaultListModel classModel = (DefaultListModel) JlistStudentClass.getModel();
@@ -605,7 +688,7 @@ public class ManagerForm extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jDesktopPane2 = new javax.swing.JDesktopPane();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tblMajor1 = new javax.swing.JTable();
+        tblMajorDetails = new javax.swing.JTable();
         jPanel9 = new javax.swing.JPanel();
         btnAddMajor1 = new javax.swing.JButton();
         btnDelete1 = new javax.swing.JButton();
@@ -683,8 +766,8 @@ public class ManagerForm extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        btnUpdate = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
@@ -817,6 +900,7 @@ public class ManagerForm extends javax.swing.JFrame {
         tblStudentClass = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Quản Lý");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -958,7 +1042,7 @@ public class ManagerForm extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "ID Ngành", "Mã  Ngành", "Tên Ngành"
+                "ID", "Mã ngành", "Tên ngành"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -1012,12 +1096,11 @@ public class ManagerForm extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnAddMajor, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                        .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(156, 156, 156))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAddMajor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(150, 150, 150))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1028,7 +1111,7 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel15.setText("Tên Ngành");
@@ -1067,7 +1150,7 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout pnMajorLayout = new javax.swing.GroupLayout(pnMajor);
@@ -1082,8 +1165,8 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addContainerGap(207, Short.MAX_VALUE)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(51, 51, 51)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54))
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195))
             .addGroup(pnMajorLayout.createSequentialGroup()
                 .addGap(362, 362, 362)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1095,9 +1178,9 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addComponent(jLabel6)
                 .addGap(18, 18, 18)
-                .addGroup(pnMajorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnMajorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
                 .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1108,26 +1191,26 @@ public class ManagerForm extends javax.swing.JFrame {
         jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel17.setText("Quản Lý Ngành Hẹp");
 
-        tblMajor1.setModel(new javax.swing.table.DefaultTableModel(
+        tblMajorDetails.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "ID Ngành", "Mã  Ngành", "Tên Ngành"
+                "Mã Ngành", "Tên ngành"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(tblMajor1);
+        jScrollPane3.setViewportView(tblMajorDetails);
 
         jDesktopPane2.setLayer(jScrollPane3, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
@@ -1200,6 +1283,12 @@ public class ManagerForm extends javax.swing.JFrame {
         });
 
         jLabel20.setText("Chuyên Ngành");
+
+        cboMajorForDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboMajorForDetailsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -1936,14 +2025,6 @@ public class ManagerForm extends javax.swing.JFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setLayout(new java.awt.GridLayout(4, 2, 5, 5));
 
-        btnUpdate.setText("Sửa");
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
-            }
-        });
-        jPanel4.add(btnUpdate);
-
         btnAdd.setText("Thêm");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1951,6 +2032,14 @@ public class ManagerForm extends javax.swing.JFrame {
             }
         });
         jPanel4.add(btnAdd);
+
+        btnUpdate.setText("Sửa");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnUpdate);
 
         jButton9.setText("Xóa");
         jButton9.addActionListener(new java.awt.event.ActionListener() {
@@ -2809,18 +2898,21 @@ public class ManagerForm extends javax.swing.JFrame {
         jPanel33.setLayout(jPanel33Layout);
         jPanel33Layout.setHorizontalGroup(
             jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel33Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel39, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1131, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel33Layout.createSequentialGroup()
-                        .addGap(0, 14, Short.MAX_VALUE)
-                        .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 1117, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
             .addGroup(jPanel33Layout.createSequentialGroup()
-                .addGap(435, 435, 435)
-                .addComponent(jLabel38)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel33Layout.createSequentialGroup()
+                        .addGap(435, 435, 435)
+                        .addComponent(jLabel38)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel33Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel33Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 1117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jPanel39, javax.swing.GroupLayout.PREFERRED_SIZE, 1131, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         jPanel33Layout.setVerticalGroup(
             jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2829,9 +2921,9 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addComponent(jLabel38)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel39, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
 
         jTabbedPane2.addTab("Phân môn", jPanel33);
@@ -3220,7 +3312,7 @@ public class ManagerForm extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(container, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -3288,7 +3380,13 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_cboMajorMouseClicked
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        insertStudent(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid(), mdsv.getMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid()).get(cboMajorDetails.getSelectedIndex()).getMajorid());
+        if (vadladteStudent() == true && validateEmail(txtEmail.getText()) == true && validatePhoneNumber(txtPhoneNum.getText()) == true) {
+            insertStudent(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid(), mdsv.getMajorDetails(msv.getAllMajor().get(cboMajor.getSelectedIndex()).getMajorid()).get(cboMajorDetails.getSelectedIndex()).getMajorid());
+            clearForm();
+          JOptionPane.showMessageDialog(this, "Thêm dữ liệu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm dữ liệu thất bại Do sai hoặc thiếu các trường dữ liệu cần thiết", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
         imageData = new byte[]{};
         fillStudentToTable();
     }//GEN-LAST:event_btnAddActionPerformed
@@ -3302,8 +3400,7 @@ public class ManagerForm extends javax.swing.JFrame {
         pnMajorDetails.setVisible(false);
         pnStudent.setVisible(false);
         pnRoom.setVisible(false);
-                pnSubject.setVisible(false);
-
+        pnSubject.setVisible(false);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnAddMajorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMajorActionPerformed
@@ -3312,11 +3409,11 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddMajorActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void txtCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodeActionPerformed
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_txtCodeActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
@@ -3405,7 +3502,18 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tblStudentMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        updateStudent();
+        try {
+        if (vadladteStudent() == true && validateEmail(txtEmail.getText()) == true && validatePhoneNumber(txtPhoneNum.getText()) == true) {
+              updateStudent();
+            JOptionPane.showMessageDialog(this,"Sửa thông tin thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Sửa dữ liệu thất bại Do sai hoặc thiếu các trường dữ liệu cần thiết", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() == 50000) {
+                JOptionPane.showMessageDialog(this,"Sinh viên này đang có tiến độ học trong ngành ko thể đổi ngành","Cảnh báo",JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
@@ -3417,15 +3525,32 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_cboMajorDetailsActionPerformed
 
     private void btnUpdate1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdate1ActionPerformed
-        updateLecture(lsv.getAllLectureData().get(tblLecture.getSelectedRow()).getLectureId());
-        clearForm();
-        fillAllLectureToTable();
+        try {
+        if (validateLecture() == true && validatePhoneNumber(txtLecturePhoneNum1.getText())==true &&validateEmail(txtLectureEmail.getText())) {
+            updateLecture(lsv.getAllLectureData().get(tblLecture.getSelectedRow()).getLectureId());
+            clearForm();
+            fillAllLectureToTable();
+            JOptionPane.showMessageDialog(this,"Sửa thông tin thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+        }
+        else{
+           JOptionPane.showMessageDialog(this, "Sửa dữ liệu thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+        } catch (SQLException ex) {
+              if (ex.getErrorCode() == 50000) {
+                JOptionPane.showMessageDialog(this,"Giảng viên này đang có tiến độ học trong ngành ko thể đổi ngành","Cảnh báo",JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnUpdate1ActionPerformed
 
     private void btnAdd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd1ActionPerformed
+        if (validateLecture() == true && validatePhoneNumber(txtLecturePhoneNum1.getText())==true &&validateEmail(txtLectureEmail.getText())) {
         insertLecture();
         clearForm();
         fillAllLectureToTable();
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Thêm dữ liệu thất bại do sai hoặc thiếu các trường dữ liệu cần thiết", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnAdd1ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
@@ -3534,18 +3659,25 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void CbMajorForClassAssignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbMajorForClassAssignmentActionPerformed
         try {
+            DefaultTableModel model = (DefaultTableModel) tblSubjectAssignment.getModel();
+            model.setRowCount(0);
            Major major = (Major)CbMajorForClassAssignment.getSelectedItem();
            getAllMajorDetailForSubjectAssignmentByMajorId(major.getMajorid());
+
         } catch (NullPointerException e) {
             DefaultListModel model = new DefaultListModel();
             jListClass.setModel(model);
             model.removeAllElements();
             model.addElement("Không có lớp nào");
+                       DefaultListModel list = (DefaultListModel) jListSubject.getModel();
+           list.removeAllElements();
         }
     }//GEN-LAST:event_CbMajorForClassAssignmentActionPerformed
 
     private void cboMajorDetailsForSubjectAssignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorDetailsForSubjectAssignmentActionPerformed
         try {
+            DefaultTableModel model = (DefaultTableModel) tblSubjectAssignment.getModel();
+            model.setRowCount(0);
             MajorDetails majorDetails = (MajorDetails) cboMajorDetailsForSubjectAssignment.getSelectedItem();
             getAllClassToJlist(majorDetails.getMajorDetaisId());
         } catch (NullPointerException e) {
@@ -3563,12 +3695,13 @@ public class ManagerForm extends javax.swing.JFrame {
         getAllSubjectDataForSubjectAssigment(classForSubject.getMajorid(),classForSubject.getIdClass());
         fillToTableSubjectAssignment(classForSubject.getIdClass());
         } catch (ArrayIndexOutOfBoundsException e) {
-//            model.removeAllElements();
+                       DefaultListModel list = (DefaultListModel) jListSubject.getModel();
+           list.removeAllElements();
         }
-//        catch(ClassCastException e){
-//            DefaultTableModel modelTable = (DefaultTableModel) tblSubjectAssignment.getModel();
-//            modelTable.setRowCount(0);
-//        }
+        catch(ClassCastException e){
+           DefaultListModel list = (DefaultListModel) jListSubject.getModel();
+           list.removeAllElements();
+        }
     }//GEN-LAST:event_jListClassValueChanged
 
     private void jListClassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListClassMouseClicked
@@ -3591,6 +3724,8 @@ public class ManagerForm extends javax.swing.JFrame {
     private void cboMajorTeachingAssigmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorTeachingAssigmentActionPerformed
 
         try {
+            DefaultTableModel model = (DefaultTableModel) tblAssignment.getModel();
+            model.setRowCount(0);
             Major major = (Major) cboMajorTeachingAssigment.getSelectedItem();
             getAllMajorDetailForTechingByMajorId(major.getMajorid());
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -3601,6 +3736,8 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void cboMajorDetailsForTeachingAssignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorDetailsForTeachingAssignmentActionPerformed
         try {
+                        DefaultTableModel model = (DefaultTableModel) tblAssignment.getModel();
+            model.setRowCount(0);
             MajorDetails mjd = (MajorDetails) cboMajorDetailsForTeachingAssignment.getSelectedItem();
             getAllClassToJlistForTeaching(mjd.getMajorDetaisId());
         } catch (NullPointerException e) {
@@ -3650,33 +3787,51 @@ public class ManagerForm extends javax.swing.JFrame {
         try {
             Major major = (Major) CboSMajortudentAssigmenrt.getSelectedItem();
             getAllMajorDetailForStudentAssignmentByMajorId(major.getMajorid());
+            DefaultTableModel model = (DefaultTableModel) tblStudentClass.getModel();
+            model.setRowCount(0);
         } catch (ClassCastException e) {
-            DefaultListModel model = (DefaultListModel) JlistLecture.getModel();
-            model.removeAllElements();
+//            DefaultListModel model = (DefaultListModel) JlistLecture.getModel();
+//            model.removeAllElements();
         }
         catch(NullPointerException e){
-             Major major = (Major) CboSMajortudentAssigmenrt.getSelectedItem();
+            Major major = (Major) CboSMajortudentAssigmenrt.getSelectedItem();
             getAllMajorDetailForStudentAssignmentByMajorId(major.getMajorid());
-               DefaultListModel classModel = (DefaultListModel) JlistStudentClass.getModel();
-            classModel.removeAllElements();
-            
+            try {
+                            DefaultListModel JlistStudentClass = (DefaultListModel) this.JlistStudentClass.getModel();
+            DefaultListModel JlistStudent = (DefaultListModel) this.JlistStudent.getModel();
+            JlistStudent.removeAllElements();
+            JlistStudentClass.removeAllElements();
+            } catch (ClassCastException ex) {
+            }
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
         }
     }//GEN-LAST:event_CboSMajortudentAssigmenrtActionPerformed
 
     private void cboMajorForStudentASActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorForStudentASActionPerformed
         try {
+            DefaultTableModel model = (DefaultTableModel) tblStudentClass.getModel();
+            model.setRowCount(0);
             MajorDetails majorDetails = (MajorDetails) cboMajorForStudentAS.getSelectedItem();
             getAllClassToJlistForStudent(majorDetails.getMajorDetaisId());
         } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
+//            DefaultListModel model = (DefaultListModel) JlistStudentClass.getModel();
+//            model.removeAllElements();
         }
+        catch(ClassCastException e){}
     }//GEN-LAST:event_cboMajorForStudentASActionPerformed
 
     private void JlistStudentClassValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_JlistStudentClassValueChanged
-        DefaultListModel model = (DefaultListModel)JlistStudentClass.getModel();
+        try {
+                    DefaultListModel model = (DefaultListModel)JlistStudentClass.getModel();
         Class classForStudent = (Class) model.getElementAt(JlistStudentClass.getSelectedIndex());
         getAllStudentToListByMajorID(classForStudent.getMajorDetaisId());
         fillToTableStudentByClassID(classForStudent.getIdClass());
+        } catch (NullPointerException e) {
+        }
+        catch(ArrayIndexOutOfBoundsException e){
+        
+        }
     }//GEN-LAST:event_JlistStudentClassValueChanged
 
     private void jButton47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton47ActionPerformed
@@ -3690,6 +3845,10 @@ public class ManagerForm extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_jButton47ActionPerformed
+
+    private void cboMajorForDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorForDetailsActionPerformed
+        fillToTableMajorDetails(msv.getAllMajor().get(cboMajorForDetails.getSelectedIndex()).getMajorid());
+    }//GEN-LAST:event_cboMajorForDetailsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -3949,7 +4108,7 @@ public class ManagerForm extends javax.swing.JFrame {
     private javax.swing.JTable tblClass;
     private javax.swing.JTable tblLecture;
     private javax.swing.JTable tblMajor;
-    private javax.swing.JTable tblMajor1;
+    private javax.swing.JTable tblMajorDetails;
     private javax.swing.JTable tblStudent;
     private javax.swing.JTable tblStudentClass;
     private javax.swing.JTable tblSubject;

@@ -33,8 +33,9 @@ public class StudentForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Lecture.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(StudentForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        setTitle(stus.getStudentDetail(UserService.getCurrentUser().getStudentId()).getStudentName()+" - Bảng điểm");
     }
     public void onLoad(){
         System.out.println(UserService.getCurrentUser().toString());
