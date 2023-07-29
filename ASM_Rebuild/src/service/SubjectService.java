@@ -56,7 +56,7 @@ public LinkedList<Subject> getrAllSubjectsDataByMajorId(int majorId,int classId)
         LinkedList<Subject> listSubjet = new LinkedList<>();
         try {
             Connection conn =  DatabaseConnection.getConnection();
-            CallableStatement cstm = conn.prepareCall("""
+            PreparedStatement cstm = conn.prepareCall("""
             SELECT mh.idMonHoc,mh.maMon,mh.tenMon
                     FROM lopHoc lh
                         CROSS JOIN Mon_Hoc mh
@@ -77,4 +77,6 @@ public LinkedList<Subject> getrAllSubjectsDataByMajorId(int majorId,int classId)
         }
         return  listSubjet;
     }
+
+    
 }

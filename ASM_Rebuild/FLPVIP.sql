@@ -980,4 +980,52 @@ BEGIN
     FROM Giang_Vien gv
     INNER JOIN inserted i ON gv.idGiangVien = i.idGiangVien;
 END;
+GO
+create or alter trigger tg_DeleteUser ON Users
+AFTER DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
 
+    DECLARE @deleted_idSinhVien INT;
+    SELECT @deleted_idSinhVien = idSinhVien FROM DELETED;
+
+    IF NOT EXISTS (SELECT 1 FROM ThamGiaHoc WHERE idSinhVien = @deleted_idSinhVien)
+    BEGIN
+        DELETE FROM Sinh_Vien WHERE idSinhVien = @deleted_idSinhVien;
+    END;
+END;
+SELECT * FROM Sinh_Vien
+SELECT * FROM Users
+Delete from Sinh_Vien WHERE Sinh_Vien.idSinhVien = 39
+
+GO
+CREATE or alter PROCEDURE p_DeleteStudent
+@studentId int
+AS
+BEGIN
+	if exists(SELECT 1 FROM ThamGiaHoc WHERE idSinhVien = @studentId)
+	BEGIN
+		RAISERROR(N'Mày ngu vãi cả lồn', 16, 1)
+	END
+	ELSE
+		BEGIN
+		DELETE FROM Users WHERE idSinhVien = @studentId
+		DELETE FROM Sinh_Vien WHERE idSinhVien = @studentId
+		END
+END
+GO
+CREATE or alter PROCEDURE p_DeleteLecture
+@lectureID int
+AS
+BEGIN
+	if exists(SELECT 1 FROM Phan_Cong WHERE idGiangVien = @lectureID)
+	BEGIN
+		RAISERROR(N'Mày ngu vãi cả lồn', 16, 1)
+	END
+	ELSE
+		BEGIN
+			DELETE FROM Users WHERE idGiangVien = @lectureID
+			DELETE FROM Giang_Vien WHERE idGiangVien = @lectureID
+		END
+END

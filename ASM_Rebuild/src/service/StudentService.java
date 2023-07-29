@@ -123,4 +123,14 @@ public class StudentService {
         }
          return listStudent; 
     }
+        public void deleteStudentByStudentId(int id) throws SQLException{
+        Connection conn =  DatabaseConnection.getConnection();
+            CallableStatement pstm = conn.prepareCall("""
+                                                      {CALL p_DeleteStudent (?)}
+                                                      """);
+         pstm.setInt(1, id);
+         pstm.execute();
+         conn.close();
+         pstm.close();
+    }
 }

@@ -603,6 +603,27 @@ public class ManagerForm extends javax.swing.JFrame {
         }
         return checkPhoneNum;
     }
+    public void deleteStudent(int id){
+        try {
+            stus.deleteStudentByStudentId(id);
+                JOptionPane.showMessageDialog(this, "Xóa sinh viên thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);            
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() == 50000) {
+                JOptionPane.showMessageDialog(this, "Sinh viên này đang học khi xóa thì sẽ mất rất nhiều dữ liệu","Cảnh báo",JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    public void deleteLecture(int id){
+        try {
+            lsv.deleteLecture(id);
+            fillAllLectureToTable();
+               JOptionPane.showMessageDialog(this, "Xóa giảng viên thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);            
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() == 50000) {
+                JOptionPane.showMessageDialog(this, "Giảng viên này đang dạy khi xóa thì sẽ mất rất nhiều dữ liệu","Cảnh báo",JOptionPane.ERROR_MESSAGE);
+            }        
+        }
+    }
     public void insertStudentAssignment(){
         DefaultListModel classModel = (DefaultListModel) JlistStudentClass.getModel();
         DefaultListModel studentMOdel = (DefaultListModel) JlistStudent.getModel();
@@ -2002,8 +2023,7 @@ public class ManagerForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnRoomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTabbedPane1))
-                .addContainerGap())
+                    .addComponent(jTabbedPane1)))
         );
         pnRoomLayout.setVerticalGroup(
             pnRoomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2911,7 +2931,7 @@ public class ManagerForm extends javax.swing.JFrame {
                                 .addGap(6, 6, 6)
                                 .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 1117, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jPanel39, javax.swing.GroupLayout.PREFERRED_SIZE, 1131, Short.MAX_VALUE))))
+                            .addComponent(jPanel39, javax.swing.GroupLayout.DEFAULT_SIZE, 1131, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel33Layout.setVerticalGroup(
@@ -3404,8 +3424,13 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnAddMajorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMajorActionPerformed
-        add();
+        if (txtName.getText().trim().equalsIgnoreCase("")||txtCode.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this,"Thiếu trường dữ liệu cần thiết","Thông báo",JOptionPane.ERROR_MESSAGE);
+        }
+        else{
+                add();
         JOptionPane.showMessageDialog(this, "Thêm ngành mới thành công");
+        }
     }//GEN-LAST:event_btnAddMajorActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
@@ -3429,8 +3454,14 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void btnAddMajor1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMajor1ActionPerformed
-        addMajorDetails(cboMajorForDetails.getSelectedIndex());
+        if (txtMajorDetailsCode.getText().trim().equals("")|| TxtMajorDetailsName.getText().trim().equals("")) {
+                        JOptionPane.showMessageDialog(this,"Thiếu trường dữ liệu cần thiết","Thông báo",JOptionPane.ERROR_MESSAGE);
+
+        }
+        else{
+                addMajorDetails(cboMajorForDetails.getSelectedIndex());
         JOptionPane.showMessageDialog(this, "Thêm thành công");
+        }
     }//GEN-LAST:event_btnAddMajor1ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
@@ -3498,7 +3529,8 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void tblStudentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStudentMouseClicked
-        getStudentData(tblStudent.getSelectedRow());
+
+            getStudentData(tblStudent.getSelectedRow());
     }//GEN-LAST:event_tblStudentMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -3515,9 +3547,14 @@ public class ManagerForm extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
-
+    
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+          try {
+               deleteStudent(stus.getAlLStudentDetail().get(tblStudent.getSelectedRow()).getStudentId());
+            fillStudentToTable();
+        } catch (IndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(this,"Vui lòng chọn dữ liệu ở bảng","Cảnh báo",JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void cboMajorDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMajorDetailsActionPerformed
@@ -3554,7 +3591,7 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdd1ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        // TODO add your handling code here:
+        this.deleteLecture(lsv.getAllLectureData().get(tblLecture.getSelectedRow()).getLectureId());
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
@@ -3598,8 +3635,12 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-        insertRoom();
-        fillRoomsToTable();
+        if (txtBuildingCode.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this,"Thiếu trường dữ liệu cần thiết","Thông báo",JOptionPane.ERROR_MESSAGE);
+        }else{
+            insertRoom();
+            fillRoomsToTable();
+        }
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
@@ -3621,8 +3662,13 @@ public class ManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSubjectNameActionPerformed
 
     private void jButton33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton33ActionPerformed
-        insertSubject();
+        if (txtSubjectName.getText().trim().equalsIgnoreCase("")) {
+           JOptionPane.showMessageDialog(this,"Thiếu trường dữ liệu cần thiết","Cảnh báo",JOptionPane.ERROR_MESSAGE);
+        }
+        else{
+                insertSubject();
         fillAllSubjectsDataToTable();
+        }
        
     }//GEN-LAST:event_jButton33ActionPerformed
 
