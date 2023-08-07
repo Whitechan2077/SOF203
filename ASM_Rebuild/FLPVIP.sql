@@ -1022,6 +1022,7 @@ BEGIN
 	if exists(SELECT 1 FROM Phan_Cong WHERE idGiangVien = @lectureID)
 	BEGIN
 		RAISERROR(N'Mày ngu vãi cả lồn', 16, 1)
+		ROLLBack transaction
 	END
 	ELSE
 		BEGIN
@@ -1029,3 +1030,30 @@ BEGIN
 			DELETE FROM Giang_Vien WHERE idGiangVien = @lectureID
 		END
 END
+go
+
+--- tg chua hoan toan chay
+create or alter trigger tg_checkUpdatesubject ON Mon_Hoc
+FOR update 
+AS
+BEgin
+	DECLARE @subjectId int;
+	SELECT @subjectId = idMonHoc FROm inserted
+	if exists (SELECT 1 FROM inserted WHERE idMonHoc = @subjectId)
+	BEGIN
+		RAISERROR(N'Mày ngu vãi cả lồn', 16, 1)
+		rollback transaction
+	END
+End
+SELECT * FROM Mon_Hoc
+GO
+UPDATE Mon_Hoc SET idNganh =? ,  idNganhHep = ? , tenMon = ?
+	WHERE Mon_Hoc.idMonHoc = ?
+GO
+Go
+SELECT * From Chuyen_Nganh
+Go
+Update Chuyen_Nganh set tenNganh = ? , maNganh = ?
+GO
+update Nganh_Hep set idNganh =? , maNganhHep = ?, tenNganhHep = ?
+SELEct * FROM Nganh_Hep
