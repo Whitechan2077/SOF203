@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * @author buidu
  */
 public class DatabaseConnection {
-     private static final  String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=QLPB;user=sa;password=06122004;encrypt=false";
+     private static final  String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=PTPM_FINALLY_JAVA_SOF203;user=sa;password=06122004;encrypt=false";
      public static Connection getConnection(){
          Connection conn = null;
          try {           
@@ -23,4 +23,7 @@ public class DatabaseConnection {
          }
           return conn;
      }
+     public static void main(String[] args) {
+        getConnection();
+    }
 }
